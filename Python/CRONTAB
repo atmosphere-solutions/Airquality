@@ -1,0 +1,2 @@
+*/5 * * * * sudo python3 /var/www/html/Airquality/Python/get_monitor_readings.py monitor_data 
+

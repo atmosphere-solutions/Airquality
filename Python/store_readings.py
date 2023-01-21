@@ -92,19 +92,19 @@
 #  pm2.5_10minute - Number - 10 minute pseudo (estimated) average for PM2.5 (Average of a and b sensors)
 #  pm2.5_10minute_a - Number - As above for sensor a.
 #  pm2.5_10minute_b - Number - As above for sensor b.
-#  pm2.5_30minute - Number - 
+#  pm2.5_30minute - Number - 30 minute pseudo (estimated) average for PM2.5 (Average of a and b sensors)
 #  pm2.5_30minute_a - Number - As above for sensor a.
 #  pm2.5_30minute_b - Number - As above for sensor b.
-#  pm2.5_60minute - Number - 
+#  pm2.5_60minute - Number - 60 minute pseudo (estimated) average for PM2.5 (Average of a and b sensors)
 #  pm2.5_60minute_a - Number - As above for sensor a.
 #  pm2.5_60minute_b - Number - As above for sensor b.
-#  pm2.5_6hour - Number - 
+#  pm2.5_6hour - Number - 6 hour pseudo (estimated) average for PM2.5 (Average of a and b sensors)
 #  pm2.5_6hour_a - Number - As above for sensor a.
 #  pm2.5_6hour_b - Number - As above for sensor b.
-#  pm2.5_24hour - Number - 
+#  pm2.5_24hour - Number - 24 hour pseudo (estimated) average for PM2.5 (Average of a and b sensors)
 #  pm2.5_24hour_a - Number - As above for sensor a.
 #  pm2.5_24hour_b - Number - As above for sensor b.
-#  pm2.5_1week - Number - 
+#  pm2.5_1week - Number - 7 day pseudo (estimated) average for PM2.5 (Average of a and b sensors)
 #  pm2.5_1week_a - Number - As above for sensor a.
 #  pm2.5_1week_b - Number - As above for sensor b.
 #
@@ -156,10 +156,10 @@ else:
 ##########################################################################
 PURPLE_AIR_SENSOR_API = 'https://api.purpleair.com/v1/sensors'
 PURPLE_AIR_API_KEY = '5901141D-E28E-11EC-8561-42010A800005'
-BC_NW_LATITUDE = 60.0
+BC_NW_LATITUDE = 60.00
 BC_NW_LONGITUDE = -139.06
-BC_SE_LATITUDE = 48.3
-BC_SE_LONGITUDE - 114.03
+BC_SE_LATITUDE = 48.30
+BC_SE_LONGITUDE = -114.03
 result = ''
 
 # Sort method for the monitor list by id.
@@ -173,6 +173,8 @@ Sensor_Fields = [
     "name",          # The name given to the sensor from the registration form and used on the PA map.
     "pm2.5",         # Average of channel A and B excluding downgraded channels and using CF=1 variant
                      # for indoor, ATM variant for outdoor devices
+    "pm2.5_60minute",
+    "pm2.5_24hour",
     "latitude",
     "longitude"
 ]
@@ -181,9 +183,10 @@ Sensor_Fields = [
 field_list_string = "last_modified"
 for field in Sensor_Fields:
     field_list_string += "%2C" + field
- 
+
 # Build http request and send.
-location_box_params = '&nwlng=' + BC_NW_LONGITUDE + '&nwlat=' + BC_NW_LATITUDE + '&selng=' + BC_SE_LONGITUDE + '&selat' + BC_SE_LATITUDE
+location_box_params = '&nwlng=' + str(BC_NW_LONGITUDE) + '&nwlat=' + str(BC_NW_LATITUDE)
+location_box_params = location_box_params + '&selng=' + str(BC_SE_LONGITUDE) + '&selat=' + str(BC_SE_LATITUDE)
 url = 'https://api.purpleair.com/v1/sensors' + '?fields=' + field_list_string + location_box_params
 headers = {'content-type': 'application/json', 'X-API-Key': '5901141D-E28E-11EC-8561-42010A800005'}
 req = requests.Request('Get',url,headers=headers,data='')
@@ -194,6 +197,7 @@ response = s.send(prepared)
 if response.status_code != 200:
     print(f'Request Failed: {response.status_code}')
     print(response.reason)
+    print(response)
     sys.exit()
 else:
     result = response.text
@@ -218,16 +222,6 @@ json_data = json.loads(response.text)
 raw_monitor_data = json_data['data']
 raw_monitor_data.sort(key=sortParam)
 
-# Print out data for each monitor in list - debug only, comment out for now.
-#for monitor in raw_monitor_data:
-#    i = 0
-#    print("*******************************\n")
-#    for x in monitor :
-#        print(f"Item: #{i}, Value: {x} \n")
-#        i += 1
-#    print("*******************************\n")
-#    print(monitor)
-
 # Load json data into a python array of monitor dictionaries.
 for monitor in raw_monitor_data:
     monitor_list.append(monitor[0])
@@ -239,7 +233,9 @@ for monitor in raw_monitor_data:
     monitor_dict['Name'] = monitor[3]
     monitor_dict["Lat"] = monitor[4]
     monitor_dict["Lon"] = monitor[5]
-    monitor_dict["PM2_5Value"] = monitor[6]
+    monitor_dict["PM2_5_Value"] = monitor[6]
+    monitor_dict["PM2_5_1_Hour"] = monitor[7]
+    monitor_dict["PM2_5_1_Day"] = monitor[8]
 
     monitor_array.append(monitor_dict)
 
@@ -254,7 +250,22 @@ for monitor in raw_monitor_data:
 #  Exit Script, we will implement the SQL inserts later.
 #
 ##########################################################################
-print(monitor_array)
+# Print out data for each monitor in list - debug only, comment out for now.
+for monitor in monitor_array:
+    print("*******************************\n")
+    for x in monitor :
+        if 'Last' in x:
+            if monitor[x] is None:
+                print(f"Item: {x}, Date: <unknown> \n")
+            else:
+                dt = datetime.fromtimestamp(monitor[x])
+                print(f"Item: {x}, Date: {dt} \n")
+        else:
+            print(f"Item: {x}, Value: {monitor[x]} \n")
+    print("*******************************\n")
+    print(monitor)
+    #break
+
 print("Exit Script")
 sys.exit()
 print("Exit Failed")
