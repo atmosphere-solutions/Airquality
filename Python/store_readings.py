@@ -139,14 +139,6 @@ from datetime import datetime
 #    database to store the current purple air data to.
 #
 ##########################################################################
-TABLE_NAME = ""
-
-if len(sys.argv) != 2:
-    print("Invalid number of arguments!")
-    print("  USAGE: script.py table_name")
-    sys.exit()
-else:
-    TABLE_NAME = sys.argv[1]
 
 
 ##########################################################################
@@ -241,34 +233,10 @@ for monitor in raw_monitor_data:
 
 ##########################################################################
 #
-#  Store Hourly Data into a JSon file for now.
+#  Store current data and hourly/daily data per sensor.
 #
 ##########################################################################
 
-##########################################################################
-#
-#  Exit Script, we will implement the SQL inserts later.
-#
-##########################################################################
-# Print out data for each monitor in list - debug only, comment out for now.
-for monitor in monitor_array:
-    print("*******************************\n")
-    for x in monitor :
-        if 'Last' in x:
-            if monitor[x] is None:
-                print(f"Item: {x}, Date: <unknown> \n")
-            else:
-                dt = datetime.fromtimestamp(monitor[x])
-                print(f"Item: {x}, Date: {dt} \n")
-        else:
-            print(f"Item: {x}, Value: {monitor[x]} \n")
-    print("*******************************\n")
-    print(monitor)
-    #break
-
-print("Exit Script")
-sys.exit()
-print("Exit Failed")
 
 ##########################################################################
 #
@@ -290,6 +258,9 @@ mycursor = mydb.cursor()
 # Insert data from each monitor into the SQL database.
 #
 ##########################################################################
+MAP_TABLE_NAME = "Current_Readings_For_Map"
+HOURLY_TABLE_PREFIX = "Hourly_Readings_"
+DAILY_TABLE_PREFIX = "Daily_Readings_"
 
 for monitor in monitor_array:
     # Get the timestamp from the monitor data and convert to SQL date format.
@@ -314,6 +285,8 @@ for monitor in monitor_array:
         longitude = 0
 
     pmvalue = monitor.get("PM2_5Value", -1)
+    hourly_pmvalue = monitor.get("PM2_5_1_Hour", -1)
+    daily_pmvalue = monitor.get("PM2_5_1_Day", -1)
 
     if pmvalue is None:
         pmvalue = -1
@@ -328,9 +301,23 @@ for monitor in monitor_array:
     if name is None:
         name = "null"
 
+    # If we have bad data, then don't add it to the table.
+    if (latitude == 0) or (longitude == 0) or (index == 0):
+        print("Bad Data:")
+        print(monitor)
+        continue
+
+    # For now only insert data for sunshine coast into tables.
+    if (latitude < 49.34380) or (latitude > 49.76158):
+        continue
+    if (longitude > -123.43902) or (longitude < -124.10082):
+        continue
+
+    ######################################################################
+    # Replace Current Map values into Map Table
+    ######################################################################
     # Create SQL string to insert a row into the database table.
-    sql = "INSERT INTO monitor_data (ID, Name, PM2_5Value, Lastseen, Lastmodified, Lat, Lon) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    sql2 = "REPLACE INTO current_data (ID, Name, PM2_5Value, Lastseen, Lastmodified, Lat, Lon) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    sql = "REPLACE INTO " + MAP_TABLE_NAME + " (ID, Name, PM2_5Value, Lastseen, Lastmodified, Lat, Lon) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     
     # Create a list of the data we are going to insert into the table.
     val = (
@@ -343,13 +330,48 @@ for monitor in monitor_array:
             str(longitude)
             )
 
+
     # Insert the data into the table.
     print("**********************INSERTING DATA**********************\n", sql, val)
-    mycursor.execute(sql, val)
-    mydb.commit()
+    #mycursor.execute(sql, val)
+    #mydb.commit()
+
+    ######################################################################
+    # Insert hourly data into sensor specific tables.
+    # - Only insert at the top of the hour.
+    ######################################################################
+    hourly_table = HOURLY_TABLE_PREFIX + str(index)
+
+    # Create SQL string to insert a row into the database table.
+    sql = "INSERT INTO " + hourly_table + " (ID, PM2_5Value) VALUES (%s, %s)"
+    
+    # Create a list of the data we are going to insert into the table.
+    val = (
+            str(index), 
+            str(hourly_pmvalue)
+            )
 
     # Insert the data into the table.
-    print("**********************INSERTING DATA**********************\n", sql2, val)
-    mycursor.execute(sql2, val)
-    mydb.commit()
+    print("**********************INSERTING DATA**********************\n", sql, val)
+    #mycursor.execute(sql, val)
+    #mydb.commit()
 
+    ######################################################################
+    # Insert daily data into sensor specific tables.
+    # - Only insert at the top of the hour at midnight.
+    ######################################################################
+    daily_table = DAILY_TABLE_PREFIX + str(index)
+
+    # Create SQL string to insert a row into the database table.
+    sql = "INSERT INTO " + daily_table + " (ID, PM2_5Value) VALUES (%s, %s)"
+    
+    # Create a list of the data we are going to insert into the table.
+    val = (
+            str(index), 
+            str(daily_pmvalue)
+            )
+
+    # Insert the data into the table.
+    print("**********************INSERTING DATA**********************\n", sql, val)
+    #mycursor.execute(sql, val)
+    #mydb.commit()
