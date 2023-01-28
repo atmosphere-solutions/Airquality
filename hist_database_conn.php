@@ -23,16 +23,7 @@
   }
 
   # Select the daily or hourly table.
-  $idtable = "";
-  if (strcasecmp($_POST['daily'],"True")==0)
-  {
-    $idtable = 'Daily_Readings_';
-  }
-  else
-  {
-    $idtable = 'Hourly_Readings_';
-  }
-  $idtable = $idtable . $_POST['val'];
+  $idtable = $_POST['time_period'] . '_Readings_' . $_POST['val'];
 
   $sql = "SELECT PM2_5Value, Lastseen FROM $idtable ORDER BY Lastseen";
   echo($sql);

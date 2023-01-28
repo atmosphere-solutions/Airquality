@@ -445,7 +445,7 @@ return corrected;
 function ajaxhistoricalRetrieve(sensor, time_period, zoom, cfactor)
 {
 //console.log("Post: " + sensor["ID"]);
-postarray = 'val=' + sensor["ID"] + time_period;
+postarray = 'val=' + sensor["ID"] + '&time_period=' + time_period;
 element = "container" + sensor["ID"];
 //console.log(element);
 $(document).ready(function(){
