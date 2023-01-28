@@ -1,10 +1,20 @@
 <?php
+  // If we are running this script from the command-line, set the _POST
+  // variable (usually set from a HTTP request) from the arguments.
+  // Pass the arguments as follows:
+  //     php hist_database_conn.php 'val=1086&daily=true'
+  if (!isset($_SERVER["HTTP_HOST"])) 
+  {
+    parse_str($argv[1], $_POST);
+  }
+
+  // SQL Database Login Information
   $servername = "localhost";
   $username = "airdata";
   $password = "AESl0uis!";
   $dbname = "airdata";
 
-  // Create connection
+  // Create Database Connection
   $conn = new mysqli($servername, $username, $password, $dbname);
   // Check connection
   if ($conn->connect_error)
@@ -12,10 +22,21 @@
     die("Connection failed: " . $conn->connect_error);
   }
 
-  $idtable = 'sensor' . $_POST['val'];
-  //echo($idtable);
+  # Select the daily or hourly table.
+  $idtable = "";
+  if (strcasecmp($_POST['daily'],"True")==0)
+  {
+    $idtable = 'Daily_Readings_';
+  }
+  else
+  {
+    $idtable = 'Hourly_Readings_';
+  }
+  $idtable = $idtable . $_POST['val'];
 
-  $sql = "SELECT AChannel, BChannel, lastModified FROM $idtable ORDER BY LastModified";
+  $sql = "SELECT PM2_5Value, Lastseen FROM $idtable ORDER BY Lastseen";
+  echo($sql);
+  echo("\n");
   $result = $conn->query($sql);
 
   if ($result->num_rows > 0)
@@ -24,9 +45,9 @@
 
     while($row = $result->fetch_assoc())
     {
-      $AC = $row["AChannel"];
-      $BC = $row["BChannel"];
-      $last = $row["lastModified"];
+      $AC = $row["PM2_5Value"];
+      $BC = $row["PM2_5Value"];
+      $last = $row["Lastseen"];
 
       $date = date_create($last);
       $date_formatted = date_format($date, "U");

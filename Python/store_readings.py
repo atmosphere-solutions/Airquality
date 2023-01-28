@@ -134,11 +134,38 @@ from datetime import datetime
 
 ##########################################################################
 #
-# Read the command line argument and ensure it is valid.
-#  - As a reminder from the description above, this selects which
-#    database to store the current purple air data to.
+# SQL FUNCTiONS
 #
 ##########################################################################
+def checkTableExists(dbcon, tablename):
+    dbcur = dbcon.cursor()
+    dbcur.execute("""
+        SELECT COUNT(*)
+        FROM information_schema.tables
+        WHERE table_name = '{0}'
+        """.format(tablename.replace('\'', '\'\'')))
+    if dbcur.fetchone()[0] == 1:
+        dbcur.close()
+        return True
+
+    dbcur.close()
+    return False
+
+def createTable(dbcon, tablename, columns):
+    sql = "CREATE TABLE " + tablename + " ("
+    col_count = 0
+    for col_name, col_type in columns:
+        sql = sql + col_name + " " + col_type
+        col_count = col_count + 1
+        if (col_count < len(columns)):
+            sql = sql + ", "
+    sql = sql + ")"
+
+    dbcur = dbcon.cursor()
+    print("********************** Creating Table **********************")
+    print(sql)
+    dbcur.execute(sql)
+    dbcur.close
 
 
 ##########################################################################
@@ -231,6 +258,7 @@ for monitor in raw_monitor_data:
 
     monitor_array.append(monitor_dict)
 
+
 ##########################################################################
 #
 #  Store current data and hourly/daily data per sensor.
@@ -284,7 +312,7 @@ for monitor in monitor_array:
     if longitude is None or (longitude > 180 or longitude < -180):
         longitude = 0
 
-    pmvalue = monitor.get("PM2_5Value", -1)
+    pmvalue = monitor.get("PM2_5_Value", -1)
     hourly_pmvalue = monitor.get("PM2_5_1_Hour", -1)
     daily_pmvalue = monitor.get("PM2_5_1_Day", -1)
 
@@ -308,16 +336,47 @@ for monitor in monitor_array:
         continue
 
     # For now only insert data for sunshine coast into tables.
-    if (latitude < 49.34380) or (latitude > 49.76158):
+    if (latitude < 49.34380) or (latitude > 49.88034):
         continue
-    if (longitude > -123.43902) or (longitude < -124.10082):
+    if (longitude > -123.43902) or (longitude < -124.65153):
         continue
+
+    ######################################################################
+    # Ensure tables exist for current monitor.
+    ######################################################################
+    current_data_table = MAP_TABLE_NAME
+    daily_table = DAILY_TABLE_PREFIX + str(index)
+    hourly_table = HOURLY_TABLE_PREFIX + str(index)
+
+    result = checkTableExists(mydb, current_data_table)
+    if (result == False):
+        column_names = [ ('ID', 'INT PRIMARY KEY'),
+                         ('Name', 'VARCHAR(128)'),
+                         ('PM2_5Value', 'DOUBLE'),
+                         ('Lastseen', 'DATETIME'),
+                         ('Lastmodified', 'DATETIME'),
+                         ('Lat', 'DECIMAL(11,8)'),
+                         ('Lon', 'DECIMAL(11,8)') ]
+        createTable(mydb, current_data_table, column_names)
+
+    result = checkTableExists(mydb, daily_table)
+    if (result == False):
+        column_names = [ ('PM2_5Value', 'DOUBLE'),
+                         ('Lastseen', 'DATETIME PRIMARY KEY') ]
+        createTable(mydb, daily_table, column_names)
+
+    result = checkTableExists(mydb, hourly_table)
+    if (result == False):
+        column_names = [ ('PM2_5Value', 'DOUBLE'),
+                         ('Lastseen', 'DATETIME PRIMARY KEY') ]
+        createTable(mydb, hourly_table, column_names)
+
 
     ######################################################################
     # Replace Current Map values into Map Table
     ######################################################################
     # Create SQL string to insert a row into the database table.
-    sql = "REPLACE INTO " + MAP_TABLE_NAME + " (ID, Name, PM2_5Value, Lastseen, Lastmodified, Lat, Lon) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    sql = "REPLACE INTO " + current_data_table + " (ID, Name, PM2_5Value, Lastseen, Lastmodified, Lat, Lon) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     
     # Create a list of the data we are going to insert into the table.
     val = (
@@ -333,45 +392,46 @@ for monitor in monitor_array:
 
     # Insert the data into the table.
     print("**********************INSERTING DATA**********************\n", sql, val)
-    #mycursor.execute(sql, val)
-    #mydb.commit()
+    mycursor.execute(sql, val)
+    mydb.commit()
 
     ######################################################################
     # Insert hourly data into sensor specific tables.
     # - Only insert at the top of the hour.
     ######################################################################
-    hourly_table = HOURLY_TABLE_PREFIX + str(index)
-
-    # Create SQL string to insert a row into the database table.
-    sql = "INSERT INTO " + hourly_table + " (ID, PM2_5Value) VALUES (%s, %s)"
+    print(lastseen_dt.minute)
+    print(lastseen_dt.hour)
+    if (lastseen_dt.minute < 5):
+        # Create SQL string to insert a row into the database table.
+        sql = "INSERT INTO " + hourly_table + " (Lastseen, PM2_5Value) VALUES (%s, %s)"
     
-    # Create a list of the data we are going to insert into the table.
-    val = (
-            str(index), 
-            str(hourly_pmvalue)
-            )
+        # Create a list of the data we are going to insert into the table.
+        val = (
+                lastseen_dt, 
+                str(hourly_pmvalue)
+              )
 
-    # Insert the data into the table.
-    print("**********************INSERTING DATA**********************\n", sql, val)
-    #mycursor.execute(sql, val)
-    #mydb.commit()
+        # Insert the data into the table.
+        print("**********************INSERTING DATA**********************\n", sql, val)
+        mycursor.execute(sql, val)
+        mydb.commit()
 
     ######################################################################
     # Insert daily data into sensor specific tables.
-    # - Only insert at the top of the hour at midnight.
+    # - Only insert at the top of the hour at midnight pacific time.
     ######################################################################
-    daily_table = DAILY_TABLE_PREFIX + str(index)
 
-    # Create SQL string to insert a row into the database table.
-    sql = "INSERT INTO " + daily_table + " (ID, PM2_5Value) VALUES (%s, %s)"
+    if ((lastseen_dt.minute < 5) and (lastseen_dt.hour == 8)):
+        # Create SQL string to insert a row into the database table.
+        sql = "INSERT INTO " + daily_table + " (Lastseen, PM2_5Value) VALUES (%s, %s)"
     
-    # Create a list of the data we are going to insert into the table.
-    val = (
-            str(index), 
-            str(daily_pmvalue)
-            )
+        # Create a list of the data we are going to insert into the table.
+        val = (
+                lastseen_dt, 
+                str(daily_pmvalue)
+              )
 
-    # Insert the data into the table.
-    print("**********************INSERTING DATA**********************\n", sql, val)
-    #mycursor.execute(sql, val)
-    #mydb.commit()
+        # Insert the data into the table.
+        print("**********************INSERTING DATA**********************\n", sql, val)
+        mycursor.execute(sql, val)
+        mydb.commit()
