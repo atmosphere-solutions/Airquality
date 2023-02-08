@@ -59,8 +59,8 @@ $(document).ready(function() {
 
 
         setMarkers(response, correction_factor, averages);
-        //console.log(response);
-        //console.log("Hooray, it worked!");
+        console.log(response);
+        console.log("Hooray, it worked!");
     });
 
     request.fail(function (jqXHR, textStatus, errorThrown){
@@ -91,12 +91,12 @@ else {
     infowindow_status = infowindow.getMap();
 }
 
-//console.log(infowindow_status);
+console.log(infowindow_status);
 if ((infowindow_status == null) || (typeof infowindow_status == 'undefined'))
 {
     var message;
     infowindow = new google.maps.InfoWindow();
-    //console.log("Updating Markers");
+    console.log("Updating Markers");
 
     deleteMarkers();
 
@@ -305,7 +305,7 @@ if ((infowindow_status == null) || (typeof infowindow_status == 'undefined'))
             "Name": master[i][1], 
             "Value": rounded[i]
         };
-        //console.log(data_pass[i]);
+        console.log(data_pass[i]);
 
         
 
@@ -353,7 +353,7 @@ if ((infowindow_status == null) || (typeof infowindow_status == 'undefined'))
 }
 else
 {
-    //console.log("Infowindow is open, skipping refresh.")
+    console.log("Infowindow is open, skipping refresh.")
 }
 }
 
@@ -467,10 +467,11 @@ return corrected;
 }
 function ajaxhistoricalRetrieve(sensor, time_period, zoom, cfactor)
 {
-//console.log("Post: " + sensor["ID"]);
+console.log("Post: " + sensor["ID"]);
 postarray = 'val=' + sensor["ID"] + '&time_period=' + time_period;
+console.log(postarray)
 element = "container" + sensor["ID"];
-//console.log(element);
+console.log(element);
 $(document).ready(function(){
     var request;
 
@@ -484,17 +485,17 @@ $(document).ready(function(){
     request.done(function (response){
         if (typeof cfactor !== 'undefined')
         {
-            //console.log(cfactor);
+            console.log(cfactor);
             var corrected = [];
             var data = JSON.parse(response);
-            //console.log(data);
+            console.log(data);
             for (i in data[0])
             {
-                //console.log("i = " + i);
+                console.log("i = " + i);
                 var list_part = [];
                 for (x in data[0][i])
                 {
-                    //console.log(data[0][i][x]);
+                    console.log(data[0][i][x]);
                     var point = [data[0][i][x][0], correctionFactor(data[0][i][x][1], cfactor)];
                     list_part.push(point);
                 }
@@ -502,29 +503,36 @@ $(document).ready(function(){
             }
             var final = [];
             final.push(corrected);
-            //console.log(final);
+            console.log(final);
             drawChart(sensor, element, final, zoom);
         }
         else
         {
+            console.log(response)
             var json_data = JSON.parse(response);
+            console.log(json_data)
             drawChart(sensor, element, json_data, zoom);
         }
     });
+
+    console.log("Here")
 
     request.fail(function(jqXHR, textStatus, errorThrown){
         console.error("The following error occurred: " +
         textStatus, errorThrown
         );
     });
+    console.log("Here 2")
 });
 }
 function drawChart(sensor, element, data, zoom)
 {
-    //console.log('Placing chart at: ' + element);
+    console.log('Placing chart at: ' + element);
+    console.log('Data:' + data + '*****');
     //data_array = JSON.parse(data);
-    //console.log(data_array[0]);
     data_array = data;
+    console.log(data_array);
+    console.log('Here 3')
 
      mychart = Highcharts.stockChart(element, {
         chart: {
@@ -603,14 +611,9 @@ function drawChart(sensor, element, data, zoom)
                 }
             },
         series: [{
-            name: 'A Channel',
+            name: 'Mass Concentration',
             color: '#00FF00',
-            data: data_array[0][0]
-        },
-        {
-            name: 'B Channel',
-            color: 'green',
-            data: data_array[0][1]
+            data: data_array
         }],
         rangeSelector: {
             allButtonsEnabled: true,
@@ -652,7 +655,7 @@ var zoom = [min, max];
 
 var time = $("#time_period").val();
 ajaxhistoricalRetrieve(sensor, time, zoom);
-//console.log("Time period for sensor #" + sensor + " Has been changed to " + time);
+console.log("Time period for sensor #" + sensor + " Has been changed to " + time);
 
 });
 
@@ -664,7 +667,7 @@ var zoom = [min, max];
 var time = $("#time_period").val();
 var correction = $("#chart_correction").val();
 ajaxhistoricalRetrieve(sensor, time, zoom, correction);
-//console.log("Time period for sensor #" + sensor + " Has been changed to " + time);
+console.log("Time period for sensor #" + sensor + " Has been changed to " + time);
 });
 });
 }

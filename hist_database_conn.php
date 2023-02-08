@@ -2,7 +2,7 @@
   // If we are running this script from the command-line, set the _POST
   // variable (usually set from a HTTP request) from the arguments.
   // Pass the arguments as follows:
-  //     php hist_database_conn.php 'val=1086&daily=true'
+  //     php hist_database_conn.php 'val=1086&time_period=_hourly'
   if (!isset($_SERVER["HTTP_HOST"])) 
   {
     parse_str($argv[1], $_POST);
@@ -23,11 +23,18 @@
   }
 
   # Select the daily or hourly table.
-  $idtable = $_POST['time_period'] . '_Readings_' . $_POST['val'];
+  $table_name = "Daily";
+  $time_period = $_POST["time_period"];
+  //echo($time_period . "\n");
+  if (strcmp($time_period,"_hourly") == 0)
+  {
+    $table_name = "Hourly";
+  }
+  $idtable = $table_name . '_Readings_' . $_POST['val'];
 
   $sql = "SELECT PM2_5Value, Lastseen FROM $idtable ORDER BY Lastseen";
-  echo($sql);
-  echo("\n");
+  //echo($sql . "\n");
+
   $result = $conn->query($sql);
 
   if ($result->num_rows > 0)
@@ -36,22 +43,17 @@
 
     while($row = $result->fetch_assoc())
     {
-      $AC = $row["PM2_5Value"];
-      $BC = $row["PM2_5Value"];
+      $pm_value = $row["PM2_5Value"];
       $last = $row["Lastseen"];
 
       $date = date_create($last);
       $date_formatted = date_format($date, "U");
 
-      $A_Channel = floatval($AC);
-      $B_Channel = floatval($BC);
+      $pm_value_float = floatval($pm_value);
       $date_epoch = floatval($date_formatted) * 1000;
                     
-      $monitor_array1[] = array($date_epoch, $A_Channel);
-      $monitor_array2[] = array($date_epoch, $B_Channel);
+      $monitor_array[] = array($date_epoch, $pm_value_float);
     }
-
-    $monitor_array[] = array($monitor_array1, $monitor_array2);
 
     //converts PHP array into a format javascript can interpret
     $javascriptarray = json_encode($monitor_array);
