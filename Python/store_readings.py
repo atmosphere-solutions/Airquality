@@ -336,10 +336,10 @@ for monitor in monitor_array:
         continue
 
     # For now only insert data for sunshine coast into tables.
-    if (latitude < 49.34380) or (latitude > 49.88034):
-        continue
-    if (longitude > -123.43902) or (longitude < -124.65153):
-        continue
+    #if (latitude < 49.34380) or (latitude > 49.88034):
+    #    continue
+    #if (longitude > -123.43902) or (longitude < -124.65153):
+    #    continue
 
     ######################################################################
     # Ensure tables exist for current monitor.
