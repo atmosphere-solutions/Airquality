@@ -403,7 +403,7 @@ for monitor in monitor_array:
     print(lastseen_dt.hour)
     if (lastseen_dt.minute < 5):
         # Create SQL string to insert a row into the database table.
-        sql = "INSERT INTO " + hourly_table + " (Lastseen, PM2_5Value) VALUES (%s, %s)"
+        sql = "REPLACE INTO " + hourly_table + " (Lastseen, PM2_5Value) VALUES (%s, %s)"
     
         # Create a list of the data we are going to insert into the table.
         val = (
@@ -423,7 +423,7 @@ for monitor in monitor_array:
 
     if ((lastseen_dt.minute < 5) and (lastseen_dt.hour == 8)):
         # Create SQL string to insert a row into the database table.
-        sql = "INSERT INTO " + daily_table + " (Lastseen, PM2_5Value) VALUES (%s, %s)"
+        sql = "REPLACE INTO " + daily_table + " (Lastseen, PM2_5Value) VALUES (%s, %s)"
     
         # Create a list of the data we are going to insert into the table.
         val = (
