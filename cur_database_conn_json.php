@@ -12,7 +12,7 @@
     die("Connection failed: " . $conn->connect_error);
   }
 
-  $sql = "SELECT ID, Name, PM2_5Value, Lat, Lon, lastModified FROM Current_Readings_For_Map";
+  $sql = "SELECT ID, Name, PM2_5Value, Lat, Lon, DateCreated FROM Current_Readings_For_Map";
   $result = $conn->query($sql);
 
   if ($result->num_rows > 0)

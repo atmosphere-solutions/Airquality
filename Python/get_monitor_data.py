@@ -331,5 +331,18 @@ for monitor in monitor_array:
     print("**********************INSERTING DATA**********************\n", sql_cur, val)
     mycursor.execute(sql_cur, val)
     mydb.commit()
+
+
+##########################################################################
+#
+# Clean-up open connections.
+#
+##########################################################################
+
+# Insert data from each monitor into the SQL database.
 # Closes monitor list JSON to avoid memory leaks
 monitor_list.close()
+
+# Clean up databases.
+mycursor.close()
+mydb.close()

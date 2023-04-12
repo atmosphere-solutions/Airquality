@@ -129,7 +129,7 @@ import sys
 import json
 import requests
 import mysql.connector
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 ##########################################################################
@@ -151,6 +151,15 @@ def checkTableExists(dbcon, tablename):
     dbcur.close()
     return False
 
+def dropTable(dbcon, tablename):
+    sql = "DROP TABLE IF EXISTS " + tablename
+
+    dbcur = dbcon.cursor()
+    print("********************** Drop Table **********************")
+    print(sql)
+    dbcur.execute(sql)
+    dbcur.close
+
 def createTable(dbcon, tablename, columns):
     sql = "CREATE TABLE " + tablename + " ("
     col_count = 0
@@ -170,107 +179,6 @@ def createTable(dbcon, tablename, columns):
 
 ##########################################################################
 #
-# Get all the latest monitor data for all sensors in the BC region.
-#
-##########################################################################
-PURPLE_AIR_SENSOR_API = 'https://api.purpleair.com/v1/sensors'
-PURPLE_AIR_API_KEY = '5901141D-E28E-11EC-8561-42010A800005'
-BC_NW_LATITUDE = 60.00
-BC_NW_LONGITUDE = -139.06
-BC_SE_LATITUDE = 48.30
-BC_SE_LONGITUDE = -114.03
-result = ''
-
-# Sort method for the monitor list by id.
-def sortParam(elem):
-    return elem[0]
-
-# List all the sensor fields that we want to retrieve from Purple Air.
-Sensor_Fields = [
-    "last_seen",      # The UNIX time stamp of the last time the server received data from the device.
-    "sensor_index",   # The sensor_id of the new member sensor. This must be AS PRINTED on the sensor’s label.
-    "name",           # The name given to the sensor from the registration form and used on the PA map.
-    "location_type",  # The location type.  Possible values are: 0 = Outside or 1 = Inside.
-    "humidity",       # Relative humidity inside of the sensor housing (%). On average, this is 4% lower than ambient conditions. Null if not equipped.
-    "pm2.5",          # Average of channel A and B excluding downgraded channels and using CF=1 variant for indoor, ATM variant for outdoor devices
-    "pm2.5_60minute",
-    "pm2.5_24hour",
-    "latitude",
-    "longitude"
-]
-
-# List all the fields in url format in a single string.
-field_list_string = "date_created"
-for field in Sensor_Fields:
-    field_list_string += "%2C" + field
-
-# Build http request and send.
-location_box_params = '&nwlng=' + str(BC_NW_LONGITUDE) + '&nwlat=' + str(BC_NW_LATITUDE)
-location_box_params = location_box_params + '&selng=' + str(BC_SE_LONGITUDE) + '&selat=' + str(BC_SE_LATITUDE)
-url = 'https://api.purpleair.com/v1/sensors' + '?fields=' + field_list_string + location_box_params
-headers = {'content-type': 'application/json', 'X-API-Key': '5901141D-E28E-11EC-8561-42010A800005'}
-req = requests.Request('Get',url,headers=headers,data='')
-prepared = req.prepare()
-s = requests.Session()
-response = s.send(prepared)
-
-if response.status_code != 200:
-    print(f'Request Failed: {response.status_code}')
-    print(response.reason)
-    print(response)
-    sys.exit()
-else:
-    result = response.text
-
- 
-##########################################################################
-#
-# Load the data from the purple air website into a python data object.
-#
-##########################################################################
-
-if len(result) < 1:
-    print('Retrieve Failed: No data in purple air request')
-    sys.exit()
-
-
-monitor_list = []
-monitor_array = []
-
-# Load purple air data into json object and sort it.
-json_data = json.loads(response.text)
-raw_monitor_data = json_data['data']
-raw_monitor_data.sort(key=sortParam)
-
-# Load json data into a python array of monitor dictionaries.
-for monitor in raw_monitor_data:
-    monitor_list.append(monitor[0])
-        
-    monitor_dict = {}
-    monitor_dict['ID'] = monitor[0]
-    monitor_dict["DateCreated"] = monitor[1]
-    monitor_dict["Lastseen"] = monitor[2]
-    monitor_dict['Name'] = monitor[3]
-    monitor_dict['LocationType'] = monitor[4]
-    monitor_dict["Lat"] = monitor[5]
-    monitor_dict["Lon"] = monitor[6]
-    monitor_dict["Humidity"] = monitor[7]
-    monitor_dict["PM2_5_Value"] = monitor[8]
-    monitor_dict["PM2_5_1_Hour"] = monitor[9]
-    monitor_dict["PM2_5_1_Day"] = monitor[10]
-
-    monitor_array.append(monitor_dict)
-
-
-##########################################################################
-#
-#  Store current data and hourly/daily data per sensor.
-#
-##########################################################################
-
-
-##########################################################################
-#
 # Connect to the MYSQL database on this machine, check to see if the selected
 # table exists.  If it does not exist, create it.
 #
@@ -284,144 +192,247 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 
+
 ##########################################################################
 #
-# Insert data from each monitor into the SQL database.
+# Get all the monitor data we currently have stored in our database.
 #
 ##########################################################################
 MAP_TABLE_NAME = "Current_Readings_For_Map"
 HOURLY_TABLE_PREFIX = "Hourly_Readings_"
 DAILY_TABLE_PREFIX = "Daily_Readings_"
 
-for monitor in monitor_array:
-    # Get the timestamp from the monitor data and convert to SQL date format.
-    datecreated = monitor["DateCreated"]
-    lastseen = monitor["Lastseen"]
+# Create SQL string to select the row from the database table.
+sql = "SELECT * FROM " + MAP_TABLE_NAME
+mycursor.execute(sql)
+myresult = mycursor.fetchall()
 
-    if datecreated is not None:
-        datecreated_dt = datetime.utcfromtimestamp(datecreated)
-    else:
-        datecreated_dt = datetime.utcfromtimestamp(0)
-    if lastseen is not None:
-        lastseen_dt = datetime.utcfromtimestamp(lastseen)
-    else:
-        lastseen_dt = datetime.utcfromtimestamp(0)
+# Print each row of the table out.
+for row in myresult:
+    sensor_index, name, location_type, humidity, pm2_5, last_seen, last_modified, latitude, longitude = row
+    current_time = datetime.now()
 
-    latitude = monitor.get("Lat", 0)
-    longitude = monitor.get("Lon", 0)
-
-    if latitude is None or (latitude > 90 or latitude < -90):
-        latitude = 0
-    if longitude is None or (longitude > 180 or longitude < -180):
-        longitude = 0
-
-    location_type = monitor.get("LocationType", 0)
-
-    humidity = monitor.get("Humidity", -1)
-    pmvalue = monitor.get("PM2_5_Value", -1)
-    hourly_pmvalue = monitor.get("PM2_5_1_Hour", -1)
-    daily_pmvalue = monitor.get("PM2_5_1_Day", -1)
-
-    if location_type is None:
-        location_type = -1
-
-    if humidity is None:
-        humidity = -1
-
-    if pmvalue is None:
-        pmvalue = -1
-
-    name = monitor.get("Name", "null")
-
-    index = monitor.get("ID", 0)
-
-    if index is None:
-        index = 0
-
-    if name is None:
-        name = "null"
-
-    # If we have bad data, then don't add it to the table.
-    if (latitude == 0) or (longitude == 0) or (index == 0):
-        print("Bad Data:")
-        print(monitor)
+    if (sensor_index != 1086):
         continue
 
-    # For now only insert data for sunshine coast into tables.
-    #if (latitude < 49.34380) or (latitude > 49.88034):
-    #    continue
-    #if (longitude > -123.43902) or (longitude < -124.65153):
-    #    continue
+    print(str(sensor_index) + " " + name + " " + str(last_seen) + " " + str(humidity) + " " + str(pm2_5))
+    print(str(latitude) + "," + str(longitude))
+
+    ##########################################################################
+    #
+    # Calculate the start time to retrieve historical data.
+    # Hourly:
+    # - Sunshine Coast - 2 Years (10219 days)
+    # - Rest of BC and Alberta - 125 Days
+    # - United States - 27 Days
+    #
+    # Daily:
+    # - Sunshine Coast - Since Monitor was Initialized
+    # - Rest of BC and Alberta - 15 months
+    # - United States - 3 months
+    #
+    ##########################################################################
+    hourly_start_time = last_modified
+    daily_start_time = last_modified
+    if (latitude > 49.331) and (latitude < 50.363) and (longitude > -124.889) and (longitude < -122.734):
+        hourly_start_time = current_time - timedelta(days=125)
+        #hourly_start_time = current_time - timedelta(days=10219)
+        daily_start_time = last_modified
+        print('Sunshine Coast and Sea to Sky')
+    elif (latitude < 49.0) and (longitude > -123.204):
+        hourly_start_time = current_time - timedelta(days=27)
+        daily_start_time = current_time - timedelta(days=3 * 30)
+        print('US')
+    else:
+        hourly_start_time = current_time - timedelta(days=125)
+        daily_start_time = current_time - timedelta(days=15 * 30)
+        print('Alberta and BC')
+    if (last_modified > hourly_start_time):
+        hourly_start_time = last_modified
+    if (last_modified > daily_start_time):
+        daily_start_time = last_modified
+
+    print(hourly_start_time)
+    print(daily_start_time)
+
+    ##########################################################################
+    #
+    # Select the correct fields to query based on this being and indoor or
+    # outdoor sensor.
+    # - location_type = 0 (outdoor) uses ATM readings
+    # - location_type = 1 (indoor) uses CF_1 readings
+    #
+    ##########################################################################
+    pm_field = 'pm2.5_cf_1'
+    if (location_type == 0):
+        pm_field = 'pm2.5_atm'
+
+    ##########################################################################
+    #
+    #  Purple Air Constants
+    #
+    ##########################################################################
+    PURPLE_AIR_SENSOR_API = 'https://api.purpleair.com/v1/sensors/'
+    PURPLE_AIR_API_KEY = '5901141D-E28E-11EC-8561-42010A800005'
+
+    ##########################################################################
+    #
+    # Common Functions
+    #
+    ##########################################################################
+    # Sort method for the monitor list by date.
+    def sortParam(elem):
+        return elem[0]
+
+    ##########################################################################
+    #
+    #  Create the query to retrieve hourly average data.
+    #  - average field must equal 60
+    #
+    ##########################################################################
+    url = PURPLE_AIR_SENSOR_API + str(sensor_index) + '/history?average=60&fields=humidity%2C' + pm_field
+    headers = {'content-type': 'application/json', 'X-API-Key': '5901141D-E28E-11EC-8561-42010A800005'}
+    
+    ##########################################################################
+    #
+    # Retrieve hourly data from PurpleAir
+    #
+    ##########################################################################
+    data_count = 0
+    hourly_monitor_data = []
+    status_code = 200
+
+    while hourly_start_time<current_time:
+        new_url = url +'&start_timestamp=' + str(hourly_start_time.timestamp())
+        req = requests.Request('Get',new_url,headers=headers,data='')
+        prepared = req.prepare()
+        s = requests.Session()
+        response = s.send(prepared)
+        status_code = response.status_code
+
+        if status_code != 200:
+            print(f'Request Failed: {response.status_code} for {sensor_index}')
+            print(response.reason)
+            print(response)
+            break
+        else:
+            result = response.text
+
+            # Verify if the data returned is valid.
+            if len(result) < 1:
+                print('Retrieve Failed: No data in purple air request')
+                continue
+
+            # Load purple air data into json object and sort it.
+            json_data = json.loads(response.text)
+            hourly_monitor_data = hourly_monitor_data + json_data['data']
+            data_count = len(json_data['data'])
+            hourly_start_time = datetime.fromtimestamp(json_data['end_timestamp'])
+
+    # If our query failed go to the next sensor.
+    if status_code != 200:
+        continue
+
+    # Sort the first chunk of data
+    hourly_monitor_data.sort(key=sortParam)
+
+    ##########################################################################
+    #
+    #  Create the query to retrieve daily average data.
+    #  - average field must equal 1440
+    #
+    ##########################################################################
+    url = PURPLE_AIR_SENSOR_API + str(sensor_index) + '/history?average=1440&fields=humidity%2C' + pm_field
+    headers = {'content-type': 'application/json', 'X-API-Key': '5901141D-E28E-11EC-8561-42010A800005'}
+    
+    ##########################################################################
+    #
+    # Retrieve daily data from PurpleAir
+    #
+    ##########################################################################
+    data_count = 0
+    daily_monitor_data = []
+    status_code = 200
+
+    while daily_start_time<current_time:
+        new_url = url +'&start_timestamp=' + str(daily_start_time.timestamp())
+        req = requests.Request('Get',new_url,headers=headers,data='')
+        prepared = req.prepare()
+        s = requests.Session()
+        response = s.send(prepared)
+        status_code = response.status_code
+
+        if status_code != 200:
+            print(f'Request Failed: {response.status_code} for {sensor_index}')
+            print(response.reason)
+            print(response)
+            break
+        else:
+            result = response.text
+
+            # Verify if the data returned is valid.
+            if len(result) < 1:
+                print('Retrieve Failed: No data in purple air request')
+                continue
+
+            # Load purple air data into json object and sort it.
+            json_data = json.loads(response.text)
+            daily_monitor_data = daily_monitor_data + json_data['data']
+            data_count = len(json_data['data'])
+            daily_start_time = datetime.fromtimestamp(json_data['end_timestamp'])
+
+    # If our query failed go to the next sensor.
+    if status_code != 200:
+        continue
+
+    # Sort the first chunk of data
+    daily_monitor_data.sort(key=sortParam)
 
     ######################################################################
-    # Ensure tables exist for current monitor.
+    #
+    # Clear out existing tables.
+    #
     ######################################################################
-    current_data_table = MAP_TABLE_NAME
-    daily_table = DAILY_TABLE_PREFIX + str(index)
-    hourly_table = HOURLY_TABLE_PREFIX + str(index)
-
-    result = checkTableExists(mydb, current_data_table)
-    if (result == False):
-        print("Create Table")
-        column_names = [ ('ID', 'INT PRIMARY KEY'),
-                         ('Name', 'VARCHAR(128)'),
-                         ('Location', 'INTEGER'),
-                         ('Humidity', 'DOUBLE'),
-                         ('PM2_5Value', 'DOUBLE'),
-                         ('Lastseen', 'DATETIME'),
-                         ('DateCreated', 'DATETIME'),
-                         ('Lat', 'DECIMAL(11,8)'),
-                         ('Lon', 'DECIMAL(11,8)') ]
-        createTable(mydb, current_data_table, column_names)
+    daily_table = DAILY_TABLE_PREFIX + str(sensor_index)
+    hourly_table = HOURLY_TABLE_PREFIX + str(sensor_index)
 
     result = checkTableExists(mydb, daily_table)
-    if (result == False):
-        column_names = [ ('Humidity', 'DOUBLE'),
-                         ('PM2_5Value', 'DOUBLE'),
-                         ('Lastseen', 'DATETIME PRIMARY KEY') ]
-        createTable(mydb, daily_table, column_names)
+    if (result == True):
+        dropTable(mydb, daily_table)
 
     result = checkTableExists(mydb, hourly_table)
-    if (result == False):
-        column_names = [ ('Humidity', 'DOUBLE'),
-                         ('PM2_5Value', 'DOUBLE'),
-                         ('Lastseen', 'DATETIME PRIMARY KEY') ]
-        createTable(mydb, hourly_table, column_names)
+    if (result == True):
+        dropTable(mydb, hourly_table)
 
+    column_names = [ ('Humidity', 'DOUBLE'),
+                     ('PM2_5Value', 'DOUBLE'),
+                     ('Lastseen', 'DATETIME PRIMARY KEY') ]
+    createTable(mydb, daily_table, column_names)
 
-    ######################################################################
-    # Replace Current Map values into Map Table
-    ######################################################################
-    # Create SQL string to insert a row into the database table.
-    sql = "REPLACE INTO " + current_data_table + " (ID, Name, Location, Humidity, PM2_5Value, Lastseen, DateCreated, Lat, Lon) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    
-    # Create a list of the data we are going to insert into the table.
-    val = (
-            str(index), 
-            str(name),
-            str(location_type),
-            str(humidity),
-            str(pmvalue),
-            lastseen_dt, 
-            datecreated_dt,
-            str(latitude),
-            str(longitude)
-            )
-
-
-    # Insert the data into the table.
-    print("**********************INSERTING DATA**********************\n", sql, val)
-    mycursor.execute(sql, val)
-    mydb.commit()
-
+    column_names = [ ('Humidity', 'DOUBLE'),
+                     ('PM2_5Value', 'DOUBLE'),
+                     ('Lastseen', 'DATETIME PRIMARY KEY') ]
+    createTable(mydb, hourly_table, column_names)
 
     ######################################################################
-    # Insert hourly data into sensor specific tables.
-    # - Only insert at the top of the hour.
+    #
+    # Insert hourly data into sensor specific table.
+    #
     ######################################################################
-    print(lastseen_dt.minute)
-    print(lastseen_dt.hour)
-    if (lastseen_dt.minute < 5):
+    for reading in hourly_monitor_data:
+        epoch_time, humidity, hourly_pmvalue = reading
+
+        if epoch_time is None:
+             epoch_time = 0
+        if humidity is None:
+             humidity = 50
+        if hourly_pmvalue is None:
+             hourly_pmvalue = 0
+
+        lastseen_dt = datetime.fromtimestamp(epoch_time)
+
+        print(str(lastseen_dt) + ' ' + str(humidity) + ' ' + str(hourly_pmvalue))
+
         # Create SQL string to insert a row into the database table.
         sql = "REPLACE INTO " + hourly_table + " (Lastseen, Humidity, PM2_5Value) VALUES (%s, %s, %s)"
     
@@ -438,11 +449,24 @@ for monitor in monitor_array:
         mydb.commit()
 
     ######################################################################
-    # Insert daily data into sensor specific tables.
-    # - Only insert at the top of the hour at midnight pacific time.
+    #
+    # Insert daily data into sensor specific table.
+    #
     ######################################################################
+    for reading in daily_monitor_data:
+        epoch_time, humidity, daily_pmvalue = reading
 
-    if ((lastseen_dt.minute < 5) and (lastseen_dt.hour == 8)):
+        if epoch_time is None:
+             epoch_time = 0
+        if humidity is None:
+             humidity = 50
+        if daily_pmvalue is None:
+             daily_pmvalue = 0
+
+        lastseen_dt = datetime.fromtimestamp(epoch_time)
+
+        print(str(lastseen_dt) + ' ' + str(humidity) + ' ' + str(daily_pmvalue))
+
         # Create SQL string to insert a row into the database table.
         sql = "REPLACE INTO " + daily_table + " (Lastseen, Humidity, PM2_5Value) VALUES (%s, %s, %s)"
     
@@ -458,11 +482,13 @@ for monitor in monitor_array:
         mycursor.execute(sql, val)
         mydb.commit()
 
-
 ##########################################################################
 #
-# Close all open connections.
+# Close all open connections and exit program.
 #
 ##########################################################################
+print("End it!")
 mycursor.close()
 mydb.close()
+sys.exit()
+print("You are still alive!")

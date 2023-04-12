@@ -47,15 +47,18 @@ $(document).ready(function() {
         request.abort();
     }
 
+    console.log("Get data from php!")
     request = $.ajax({
         url: "/cur_database_conn_json.php",
         type: "get",
         dataType: "json"
     });
+    console.log("request complete");
 
     request.done(function (response, textStatus, jqXHR){
         //var correction = Cookies.get('correction_factor');
         var averages = Cookies.get('average');
+        console.log("setMarkers");
 
 
         setMarkers(response, correction_factor, averages);
