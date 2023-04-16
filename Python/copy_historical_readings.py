@@ -222,7 +222,7 @@ for row in myresult:
     #
     # Calculate the start time to retrieve historical data.
     # Hourly:
-    # - Sunshine Coast - 2 Years (10219 days)
+    # - Sunshine Coast - 2 Years (730 days)
     # - Rest of BC and Alberta - 125 Days
     # - United States - 27 Days
     #
@@ -236,7 +236,7 @@ for row in myresult:
     daily_start_time = last_modified
     if (latitude > 49.331) and (latitude < 50.363) and (longitude > -124.889) and (longitude < -122.734):
         hourly_start_time = current_time - timedelta(days=125)
-        #hourly_start_time = current_time - timedelta(days=10219)
+        #hourly_start_time = current_time - timedelta(days=730)
         daily_start_time = last_modified
         print('Sunshine Coast and Sea to Sky')
     elif (latitude < 49.0) and (longitude > -123.204):

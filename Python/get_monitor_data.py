@@ -1,5 +1,10 @@
 ##########################################################################
 #
+# Decprecated Script.  This is not used anymore but was the previous
+# method of retrieving data from Purple Air
+#
+##########################################################################
+#
 #  The script takes in a db table name as a command line parameter.
 #  It validates that the name is one of two tables:
 #    - monitor_data - Data that is retrieved every 5 minutes
