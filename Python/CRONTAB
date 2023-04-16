@@ -1,1 +1,3 @@
+#*/5 * * * * sudo python3 /var/www/html/Airquality/Python/get_monitor_readings.py monitor_data > /var/log/get_monitor_readings.log 2>&1
 3-59/5 * * * * sudo python3 /var/www/html/Airquality/Python/store_readings.py > /var/log/store_readings.log 2>&1
+9 8,20 * * * sudo service mysql restart > /var/log/mysqlrestart.log 2>&1
