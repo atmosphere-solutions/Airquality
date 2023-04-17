@@ -331,6 +331,12 @@ for monitor in monitor_array:
     if pmvalue is None:
         pmvalue = -1
 
+    if hourly_pmvalue is None:
+        hourly_pmvalue = -1
+
+    if daily_pmvalue is None:
+        daily_pmvalue = -1
+
     name = monitor.get("Name", "null")
 
     index = monitor.get("ID", 0)
@@ -401,7 +407,7 @@ for monitor in monitor_array:
             str(name),
             str(location_type),
             str(humidity),
-            str(pmvalue),
+            str(hourly_pmvalue),
             lastseen_dt, 
             datecreated_dt,
             str(latitude),
@@ -419,8 +425,6 @@ for monitor in monitor_array:
     # Insert hourly data into sensor specific tables.
     # - Only insert at the top of the hour.
     ######################################################################
-    print(lastseen_dt.minute)
-    print(lastseen_dt.hour)
     if (lastseen_dt.minute < 5):
         # Create SQL string to insert a row into the database table.
         sql = "REPLACE INTO " + hourly_table + " (Lastseen, Humidity, PM2_5Value) VALUES (%s, %s, %s)"
