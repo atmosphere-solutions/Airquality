@@ -24,7 +24,7 @@
                 left: 50%;
                 transform: translate(-50%);
                 background-color: #282928c0;
-                width: 550px;
+                width: 300px;
                 height: 65px;
                 border-radius: 2px;
                 display: flex;
@@ -186,8 +186,10 @@
                 <img class = 'logo' src = 'Map_Icons/Atmospherelogo.png'></img>
                 <ul class = 'menu-header'>
                         <li class = 'menu-item'><a class = 'menu-item-ref' href = 'https://atmospheresolutions.ca'><b>home</b></a></li>
+                        <!--
                         <li class = 'menu-item'><a class = 'menu-item-ref' href = '/ajax_current.php'><b>current values</b></a></li>
                         <li class = 'menu-item'><a class = 'menu-item-ref' href = '/Individual_search.php'><b>search engine</b></a></li>
+                        -->
                 </ul>
             </div>
             <div id = 'settings'>
@@ -201,20 +203,30 @@
                         <option value = '4'>No Correction Factor</option>
                     <select><br>
                     <span>Location Zoom:</span> 
-		            <select id = 'zoom_options' class = 'dropdown' style = 'margin-top: 5px;'> 
+		    <select id = 'zoom_options' class = 'dropdown' style = 'margin-top: 5px;'> 
                         <option hidden disabled selected value></option>
                         <option value = '1'>Center on Location</option>
                         <option value = '0'>Center on Gibsons</option>
                     <select><br>
+                    <!--
                     <span>Historical Averages: </span>
+                    -->
+                    <!--
                     <select id = 'avg_options' class = 'dropdown' style = 'margin-top: 5px;'>
+                    -->
+                        <!--
                         <option hidden disabled selected value></option>
                         <option value = '0'>Current Reading</option>
                         <option value = '1'>1 hr Average</option>
-                       <!-- <option value = '2'>3 hr Average</option>
+                        -->
+                        <!-- <option value = '2'>3 hr Average</option>
                         <option value = '3'>6 hr Average</option>-->
+                        <!--
                         <option value = '4'>24 hr Average</option>
+                        -->
+                    <!--
                     <select><br>
+                    -->
                 <img class = 'pm' src='Map_Icons/slider_custom_white.png'>
             </div>
             <!--<div id = 'logos'>

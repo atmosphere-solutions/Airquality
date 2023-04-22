@@ -130,3 +130,13 @@
             width: 600px;
             height: 400px;
         }
+
+        #correction_factor
+        {
+            width: 155px;
+        }
+
+        #zoom_options
+        {
+            width: 170px;
+        }

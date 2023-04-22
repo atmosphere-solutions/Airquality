@@ -1,28 +1,28 @@
-var avgdropdown = "<select id = 'avg_options' style = 'margin-top: 5px;''>" +
-"<option hidden disabled selected value>-- Select Option --</option>" +
-    "<option value = '0'>Current Reading</option>" +
-    "<option value = '1'>1 hr Average</option>" +
-    "<option value = '2'>3 hr Average</option>" +
-    "<option value = '3'>6 hr Average</option>" +
-    "<option value = '4'>24 hr Average</option>" +
-"<select>";
-var zoomdropdown = "<select id = 'zoom_options' style = 'margin-top: 5px;'>" +
-"<option hidden disabled selected value>-- Select Option --</option>" +
-    "<option value = '1'>Center on Location</option>" +
-    "<option value = '0'>Center on Gibsons</option>" +
-"<select>";
-var correctdropdown = "<select id = 'correction_factor'>" +
-"<option hidden disabled selected value>-- Select Option --</option>" +
-    "<option value = '0'>No Correction Factor</option>" +
-    "<option value = '1'>AQ-SPEC</option>" +
-    "<option value = '2'>LRAPA</option>" +
-    "<option value = '3'>U of Utah</option>" +
-    "<option value = '4'>UNBC</option>" +
-"<select>";
-var pm_image = "https://scairquality.ca/Map_Icons/slider_custom_white.png";
-   
-
-var menustring = "<p class = 'menu'><br><b>Correction Factor: </b>" + correctdropdown + "<br><b>Location Zoom: " + zoomdropdown + "<br><b>Historical Averages: " + avgdropdown + "<br>" + "<img class = 'pm' src='" + pm_image + "'>";
+//var avgdropdown = "<select id = 'avg_options' style = 'margin-top: 5px;''>" +
+//"<option hidden disabled selected value>-- Select Option --</option>" +
+//    "<option value = '0'>Current Reading</option>" +
+//    "<option value = '1'>1 hr Average</option>" +
+//    "<option value = '2'>3 hr Average</option>" +
+//    "<option value = '3'>6 hr Average</option>" +
+//    "<option value = '4'>24 hr Average</option>" +
+//"<select>";
+//var zoomdropdown = "<select id = 'zoom_options' style = 'margin-top: 5px;'>" +
+//"<option hidden disabled selected value>-- Select Option --</option>" +
+//    "<option value = '1'>Center on Location</option>" +
+//    "<option value = '0'>Center on Gibsons</option>" +
+//"<select>";
+//var correctdropdown = "<select id = 'correction_factor'>" +
+//"<option hidden disabled selected value>-- Select Option --</option>" +
+//    "<option value = '0'>No Correction Factor</option>" +
+//    "<option value = '1'>AQ-SPEC</option>" +
+//    "<option value = '2'>LRAPA</option>" +
+//    "<option value = '3'>U of Utah</option>" +
+//    "<option value = '4'>UNBC</option>" +
+//"<select>";
+//var pm_image = "https://scairquality.ca/Map_Icons/slider_custom_white.png";
+//   
+//
+//var menustring = "<p class = 'menu'><br><b>Correction Factor: </b>" + correctdropdown + "<br><b>Location Zoomx: " + zoomdropdown + "<br><b>Historical Averages: " + avgdropdown + "<br>" + "<img class = 'pm' src='" + pm_image + "'>";
 
 var hist_data;
 var chart_view = '_daily';
@@ -30,11 +30,11 @@ unit = '-3';
 supunit = unit.sup();
 
 
-function openPopup()
-{
-    $('#settings').html(menustring);
-    console.log(menustring);
-}
+//function openPopup()
+//{
+//    $('#settings').html(menustring);
+//    console.log(menustring);
+//}
 
 function ajaxRetrieve(correction_factor)
 {
@@ -314,7 +314,7 @@ if ((infowindow_status == null) || (typeof infowindow_status == 'undefined'))
 
         contentstring[i] = "<div class = 'chart' id = 'sensor" + master[i][0] + "'> <h3 style = 'margin: 10px; font-size: 1.3em; font-family: 'serif';'>"
         + data_pass[i]["Name"] + " (" + data_pass[i]["ID"] + ")</h3>" + message + "<br><b>Chart Data options: </b> &nbsp;" + "<select id = 'time_period'>" +
-            "<option hidden value = '_daily'>Averaging Period</option>" + 
+            "<option hidden value = '_daily'>Daily</option>" + 
             "<option value = '_daily'>Daily</option>" +
             "<option value = '_hourly'>Hourly</option> " +
         "</select> &nbsp;" +
