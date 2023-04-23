@@ -196,17 +196,17 @@
                 <p class = 'menu'>
                     <span>Correction Factor: </span>
                     <select id = 'correction_factor' class = 'dropdown'>
-                        <option value = '0'>UNBC</option>
+                        <option value = '0'>No Correction Factor</option>
                         <option value = '1'>AQ-SPEC</option>
                         <option value = '2'>LRAPA</option>
                         <option value = '3'>U of Utah</option>
-                        <option value = '4'>No Correction Factor</option>
+                        <option value = '4' selected>UNBC</option>
                     <select><br>
                     <span>Location Zoom:</span> 
 		    <select id = 'zoom_options' class = 'dropdown' style = 'margin-top: 5px;'> 
                         <option hidden disabled selected value></option>
+                        <option value = '0' selected>Center on Gibsons</option>
                         <option value = '1'>Center on Location</option>
-                        <option value = '0'>Center on Gibsons</option>
                     <select><br>
                     <!--
                     <span>Historical Averages: </span>

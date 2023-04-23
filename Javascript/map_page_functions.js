@@ -1,41 +1,6 @@
-//var avgdropdown = "<select id = 'avg_options' style = 'margin-top: 5px;''>" +
-//"<option hidden disabled selected value>-- Select Option --</option>" +
-//    "<option value = '0'>Current Reading</option>" +
-//    "<option value = '1'>1 hr Average</option>" +
-//    "<option value = '2'>3 hr Average</option>" +
-//    "<option value = '3'>6 hr Average</option>" +
-//    "<option value = '4'>24 hr Average</option>" +
-//"<select>";
-//var zoomdropdown = "<select id = 'zoom_options' style = 'margin-top: 5px;'>" +
-//"<option hidden disabled selected value>-- Select Option --</option>" +
-//    "<option value = '1'>Center on Location</option>" +
-//    "<option value = '0'>Center on Gibsons</option>" +
-//"<select>";
-//var correctdropdown = "<select id = 'correction_factor'>" +
-//"<option hidden disabled selected value>-- Select Option --</option>" +
-//    "<option value = '0'>No Correction Factor</option>" +
-//    "<option value = '1'>AQ-SPEC</option>" +
-//    "<option value = '2'>LRAPA</option>" +
-//    "<option value = '3'>U of Utah</option>" +
-//    "<option value = '4'>UNBC</option>" +
-//"<select>";
-//var pm_image = "https://scairquality.ca/Map_Icons/slider_custom_white.png";
-//   
-//
-//var menustring = "<p class = 'menu'><br><b>Correction Factor: </b>" + correctdropdown + "<br><b>Location Zoomx: " + zoomdropdown + "<br><b>Historical Averages: " + avgdropdown + "<br>" + "<img class = 'pm' src='" + pm_image + "'>";
-
-var hist_data;
-var chart_view = '_daily';
-unit = '-3';
-supunit = unit.sup();
-
-
-//function openPopup()
-//{
-//    $('#settings').html(menustring);
-//    console.log(menustring);
-//}
-
+//**************************************************************************************************
+// Function: ajaxRetrieve
+//**************************************************************************************************
 function ajaxRetrieve(correction_factor)
 {
 $(document).ready(function() {
@@ -56,7 +21,7 @@ $(document).ready(function() {
     console.log("request complete");
 
     request.done(function (response, textStatus, jqXHR){
-        //var correction = Cookies.get('correction_factor');
+        var correction = Cookies.get('correction_factor');
         var averages = Cookies.get('average');
         console.log("setMarkers");
 
@@ -75,291 +40,309 @@ $(document).ready(function() {
 });
 }
 
+
+//**************************************************************************************************
+// Function: deleteMarkers
+//**************************************************************************************************
 function deleteMarkers()
 {
-for (let i = 0; i < markers.length; i++)
-{
-    markers[i].setMap(null);
-}
-markers = [];
+    for (let i = 0; i < markers.length; i++)
+    {
+        markers[i].setMap(null);
+    }
+    markers = [];
 }
 
+
+//**************************************************************************************************
+// Function: setMarkers
+//**************************************************************************************************
 var infowindow;
 function setMarkers(values, correctiontype, average)
 {
-if (typeof infowindow == 'undefined'){
-    infowindow_status = null;
-}
-else {
-    infowindow_status = infowindow.getMap();
-}
+    if (typeof infowindow == 'undefined'){
+        infowindow_status = null;
+    }
+    else {
+        infowindow_status = infowindow.getMap();
+    }
 
-console.log(infowindow_status);
-if ((infowindow_status == null) || (typeof infowindow_status == 'undefined'))
-{
-    var message;
-    infowindow = new google.maps.InfoWindow();
-    console.log("Updating Markers");
-
-    deleteMarkers();
-
-    master = values;
-
-    var icon_10 = {
-    url: "Map_Icons/Map_Icon_10.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_20 = {
-    url: "Map_Icons/Map_Icon_20.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_30 = {
-    url: "Map_Icons/Map_Icon_30.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_40 = {
-    url: "Map_Icons/Map_Icon_40.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_50 = {
-    url: "Map_Icons/Map_Icon_50.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_60 = {
-    url: "Map_Icons/Map_Icon_60.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_70 = {
-    url: "Map_Icons/Map_Icon_70.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_80 = {
-    url: "Map_Icons/Map_Icon_80.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_90 = {
-    url: "Map_Icons/Map_Icon_90.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_100 = {
-    url: "Map_Icons/Map_Icon_100.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_100plus = {
-    url: "Map_Icons/Map_Icon_100+.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    var icon_NA = {
-    url: "Map_Icons/Map_Icon_NA.png",
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(15,15)
-    };
-
-    for (let i = 0; i < master.length; i++)
+    console.log(infowindow_status);
+    if ((infowindow_status == null) || (typeof infowindow_status == 'undefined'))
     {
-        //Sets the Lat Lng and Air quality Value for each sensor
-        var location = new google.maps.LatLng(master[i][4], master[i][5]);
+        var message;
+        infowindow = new google.maps.InfoWindow();
+        console.log("Updating Markers");
 
-        if (average == 0)
-        {
-            rounded[i] = String(Math.round(master[i][2] * 10) / 10);
-        }
-        else if (average == 1)
-        {
-            rounded[i] = String(Math.round(master[i][6] * 10) / 10);
-        }
-        else if (average == 2)
-        {
-            rounded[i] = String(Math.round(master[i][7] * 10) / 10);
-        }
-        else if (average == 3)
-        {
-            rounded[i] = String(Math.round(master[i][8] * 10) / 10);
-        }
-        else if (average == 4)
-        {
-            rounded[i] = String(Math.round(master[i][9] * 10) / 10);
-        }
-        else
-        {
-            rounded[i] = String(Math.round(master[i][2] * 10) / 10);
-        }
-        
+        deleteMarkers();
 
-        var icon_type;
-        var font_colour = 'white';
-        if ((rounded[i] > 100) && (rounded[i] < 1000))
-        {
-            rounded[i] = Math.round(rounded[i]);
-            icon_type = icon_100plus;
-            message = "<b style = 'color: red;'>Risk Level: Very High </b><br><b>At Risk Population:</b> Avoid strenuous activities outdoors. Children and the elderly should also avoid outdoor physical exertion.<br>" + 
-            "<b>General Population:</b> Reduce or reschedule strenuous activities outdoors, especially if you experience symptoms such as coughing and throat irritiation.<br>";
-        }
-        else if ((rounded[i] < 100) && (rounded[i] >= 90))
-        {
-            rounded[i] = Math.round(rounded[i]);
-            icon_type = icon_100;
-            message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
-            "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
-        }
-        else if ((rounded[i] < 90) && (rounded[i] >= 80))
-        {
-            rounded[i] = Math.round(rounded[i]);
-            icon_type = icon_90;
-            message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
-            "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
-        }
-        else if ((rounded[i] < 80) && (rounded[i] >= 70))
-        {
-            rounded[i] = Math.round(rounded[i]);
-            icon_type = icon_80;
-            message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
-            "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
-        }
-        else if ((rounded[i] < 70) && (rounded[i] >= 60))
-        {
-            rounded[i] = Math.round(rounded[i]);
-            icon_type = icon_70;
-            message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
-            "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
-        }
-        else if ((rounded[i] < 60) && (rounded[i] >= 50))
-        {
-            icon_type = icon_60;
-            font_colour = 'black';
-            message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
-            "<b>General Population:</b> No need to modify your usual outdoor activities unless you experience symptoms such as coughing and throat irritation.<br>";
-        }
-        else if ((rounded[i] < 50) && (rounded[i] >= 40))
-        {
-            rounded[i] = Math.round(rounded[i]);
-            icon_type = icon_50;
-            font_colour = 'black';
-            message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
-            "<b>General Population:</b> No need to modify your usual outdoor activities unless you experience symptoms such as coughing and throat irritation.<br>";
-        }
-        else if ((rounded[i] < 40) && (rounded[i] >= 30))
-        {
-            rounded[i] = Math.round(rounded[i]);
-            icon_type = icon_40;
-            font_colour = 'black';
-            message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
-            "<b>General Population:</b> No need to modify your usual outdoor activities unless you experience symptoms such as coughing and throat irritation.<br>";
-        }
-        else if ((rounded[i] < 30) && (rounded[i] >= 20))
-        {
-            rounded[i] = Math.round(rounded[i]);
-            icon_type = icon_30;
-            message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
-        }
-        else if ((rounded[i] < 20) && (rounded[i] >= 10))
-        {
-            rounded[i] = Math.round(rounded[i]);
-            icon_type = icon_20;
-            message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
-        }
-        else if ((rounded[i] < 10) && (rounded[i] >= 0))
-        {
-            icon_type = icon_10;
-            font_colour = 'black';
-            message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
-        }
-        else
-        {
-            icon_type = icon_NA
-        }
+        master = values;
 
-        data_pass[i] = {
-            "ID": master[i][0], 
-            "Name": master[i][1], 
-            "Value": rounded[i]
+        var icon_10 = {
+            url: "Map_Icons/Map_Icon_10.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
         };
-        console.log(data_pass[i]);
 
-        
+        var icon_20 = {
+            url: "Map_Icons/Map_Icon_20.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
 
-        contentstring[i] = "<div class = 'chart' id = 'sensor" + master[i][0] + "'> <h3 style = 'margin: 10px; font-size: 1.3em; font-family: 'serif';'>"
-        + data_pass[i]["Name"] + " (" + data_pass[i]["ID"] + ")</h3>" + message + "<br><b>Chart Data options: </b> &nbsp;" + "<select id = 'time_period'>" +
-            "<option hidden value = '_daily'>Daily</option>" + 
-            "<option value = '_daily'>Daily</option>" +
-            "<option value = '_hourly'>Hourly</option> " +
-        "</select> &nbsp;" +
-        "<select id = 'chart_correction'>" +
-            "<option hidden disabled selected value>Correction Factor</option>" +
-            "<option value = '0'>No Correction Factor</option>" +
-            "<option value = '1'>AQ-SPEC</option>" +
-            "<option value = '2'>LRAPA</option>" +
-            "<option value = '3'>U of Utah</option>" +
-            "<option value = '4'>UNBC</option>" +
-        "</select>";
-    
-        //creates new markers
-        var label_value = String(correctionFactor(rounded[i], correctiontype));
-        var marker = new google.maps.Marker({
-                position: location, 
-                map: map,
-                label: { text: label_value, fontSize: '12px', color: font_colour },
-                icon: icon_type
-        });
-        markers.push(marker);
-        
-        //creates pop-ups
-        google.maps.event.addListener(marker, 'click', (function (marker, i) {
-        return function () {
-                infowindow.open(map, marker);
-                infowindow.setContent(contentstring[i] + "<div class = 'infowindow' id = 'container" + master[i][0] + "'></div></div>");
-                
-                var latlng = marker.getPosition();
-                map_recenter(latlng, 0, -200);
+        var icon_30 = {
+            url: "Map_Icons/Map_Icon_30.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
 
-                google.maps.event.addListener(infowindow, 'domready', function(){
-                    ajaxhistoricalRetrieve(data_pass[i], chart_view);
-                });
-                waitForChange(data_pass[i]);
+        var icon_40 = {
+            url: "Map_Icons/Map_Icon_40.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_50 = {
+            url: "Map_Icons/Map_Icon_50.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_60 = {
+            url: "Map_Icons/Map_Icon_60.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_70 = {
+            url: "Map_Icons/Map_Icon_70.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_80 = {
+            url: "Map_Icons/Map_Icon_80.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_90 = {
+            url: "Map_Icons/Map_Icon_90.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_100 = {
+            url: "Map_Icons/Map_Icon_100.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_100plus = {
+            url: "Map_Icons/Map_Icon_100+.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_NA = {
+            url: "Map_Icons/Map_Icon_NA.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        for (let i = 0; i < master.length; i++)
+        {
+            //Sets the Lat Lng and Air quality Value for each sensor
+            var location = new google.maps.LatLng(master[i][4], master[i][5]);
+            var sensor_reading = master[i][2]
+            var humidity = master[i][6]
+
+            // I have hidden the average field (current, hour, 3-hour, 24-hour, etc.) for the map as we aren't storing data.
+            if (average == 1)
+            {
+                // longer average - nothing stored in db right now so set to 2
+                rounded[i] = String(Math.round(master[i][2] * 10) / 10);
             }
-        })(marker, i)); 
+            else if (average == 2)
+            {
+                // longer average - nothing stored in db right now so set to 2
+                rounded[i] = String(Math.round(master[i][2] * 10) / 10);
+            }
+            else if (average == 3)
+            {
+                // longer average - nothing stored in db right now so set to 2
+                rounded[i] = String(Math.round(master[i][2] * 10) / 10);
+            }
+            else if (average == 4)
+            {
+                // longer average - nothing stored in db right now so set to 2
+                rounded[i] = String(Math.round(master[i][2] * 10) / 10);
+            }
+            else
+            {
+                // default - current sensor reading
+                rounded[i] = correctionFactor(sensor_reading, humidity, correctiontype);
+            }
+        
+
+            var icon_type;
+            var font_colour = 'white';
+            if ((rounded[i] > 100) && (rounded[i] < 1000))
+            {
+                rounded[i] = Math.round(rounded[i]);
+                icon_type = icon_100plus;
+                message = "<b style = 'color: red;'>Risk Level: Very High </b><br><b>At Risk Population:</b> Avoid strenuous activities outdoors. Children and the elderly should also avoid outdoor physical exertion.<br>" + 
+                "<b>General Population:</b> Reduce or reschedule strenuous activities outdoors, especially if you experience symptoms such as coughing and throat irritiation.<br>";
+            }
+            else if ((rounded[i] < 100) && (rounded[i] >= 90))
+            {
+                rounded[i] = Math.round(rounded[i]);
+                icon_type = icon_100;
+                message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
+                "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
+            }
+            else if ((rounded[i] < 90) && (rounded[i] >= 80))
+            {
+                rounded[i] = Math.round(rounded[i]);
+                icon_type = icon_90;
+                message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
+                "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
+            }
+            else if ((rounded[i] < 80) && (rounded[i] >= 70))
+            {
+                rounded[i] = Math.round(rounded[i]);
+                icon_type = icon_80;
+                message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
+                "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
+            }
+            else if ((rounded[i] < 70) && (rounded[i] >= 60))
+            {
+                rounded[i] = Math.round(rounded[i]);
+                icon_type = icon_70;
+                message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
+                "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
+            }
+            else if ((rounded[i] < 60) && (rounded[i] >= 50))
+            {
+                icon_type = icon_60;
+                font_colour = 'black';
+                message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
+                "<b>General Population:</b> No need to modify your usual outdoor activities unless you experience symptoms such as coughing and throat irritation.<br>";
+            }
+            else if ((rounded[i] < 50) && (rounded[i] >= 40))
+            {
+                rounded[i] = Math.round(rounded[i]);
+                icon_type = icon_50;
+                font_colour = 'black';
+                message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
+                "<b>General Population:</b> No need to modify your usual outdoor activities unless you experience symptoms such as coughing and throat irritation.<br>";
+            }
+            else if ((rounded[i] < 40) && (rounded[i] >= 30))
+            {
+                rounded[i] = Math.round(rounded[i]);
+                icon_type = icon_40;
+                font_colour = 'black';
+                message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
+                "<b>General Population:</b> No need to modify your usual outdoor activities unless you experience symptoms such as coughing and throat irritation.<br>";
+            }
+            else if ((rounded[i] < 30) && (rounded[i] >= 20))
+            {
+                rounded[i] = Math.round(rounded[i]);
+                icon_type = icon_30;
+                message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
+            }
+            else if ((rounded[i] < 20) && (rounded[i] >= 10))
+            {
+                rounded[i] = Math.round(rounded[i]);
+                icon_type = icon_20;
+                message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
+            }
+            else if ((rounded[i] < 10) && (rounded[i] >= 0))
+            {
+                icon_type = icon_10;
+                font_colour = 'black';
+                message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
+            }
+            else
+            {
+                icon_type = icon_NA
+            }
+    
+            data_pass[i] = {
+                "ID": master[i][0], 
+                "Name": master[i][1], 
+                "Value": rounded[i],
+                "Humidity": master[i][6],
+            };
+            console.log(data_pass[i]);
+
+            contentstring[i] = "<div class = 'chart' id = 'sensor" + master[i][0] + "'> <h3 style = 'margin: 10px; font-size: 1.3em; font-family: 'serif';'>"
+            + data_pass[i]["Name"] + " (" + data_pass[i]["ID"] + ")</h3>" + message + "<br><b>Chart Data options: </b> &nbsp;" + "<select id = 'time_period'>" +
+                "<option value = '_daily' selected>Daily</option>" +
+                "<option value = '_hourly'>Hourly</option> " +
+            "</select> &nbsp;" +
+            "<select id = 'chart_correction'>" +
+                "<option value = '0' selected>No Correction Factor</option>" +
+                "<option value = '1'>AQ-SPEC</option>" +
+                "<option value = '2'>LRAPA</option>" +
+                "<option value = '3'>U of Utah</option>" +
+                "<option value = '4'>UNBC</option>" +
+            "</select>";
+    
+            //creates new markers
+            var label_value = String(rounded[i]);
+            var marker = new google.maps.Marker({
+                    position: location, 
+                    map: map,
+                    label: { text: label_value, fontSize: '12px', color: font_colour },
+                    icon: icon_type
+            });
+            markers.push(marker);
+        
+            //creates pop-ups
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+            return function () {
+                    infowindow.open(map, marker);
+                    infowindow.setContent(contentstring[i] + "<div class = 'infowindow' id = 'container" + master[i][0] + "'></div></div>");
+                    
+                    var latlng = marker.getPosition();
+                    map_recenter(latlng, 0, -200);
+    
+                    google.maps.event.addListener(infowindow, 'domready', function(){
+                        // The following ensure the default values of the historical graph are set correctly.
+                        // - to begin we select all data so we don't set the zoom
+                        var sensor = data_pass[i]
+                        var time = $("#time_period").val();
+                        var correction = $("#chart_correction").val();
+                        ajaxhistoricalRetrieve(sensor, time, correction);
+                    });
+                    waitForChange(data_pass[i]);
+                }
+            })(marker, i)); 
+        }
+    }
+    else
+    {
+        console.log("Infowindow is open, skipping refresh.")
     }
 }
-else
-{
-    console.log("Infowindow is open, skipping refresh.")
-}
-}
 
+
+//**************************************************************************************************
+// Function: setMapZoom
+//**************************************************************************************************
 function setMapzoom()
 {
 var current_zoom = Cookies.get("location_zoom");
@@ -381,153 +364,160 @@ else
 }
 }
 
-function correctionFactor(value, type)
-{
-var corrected;
 
-if (type == 4)
+//**************************************************************************************************
+//  Function:  correctionFactor
+//  Calculate the correction factor for the map display.
+//  
+//    "<option value = '0'>No Correction Factor</option>" +
+//    "<option value = '1'>AQ-SPEC</option>" +
+//    "<option value = '2'>LRAPA</option>" +
+//    "<option value = '3'>U of Utah</option>" +
+//    "<option value = '4'>UNBC</option>" +
+//**************************************************************************************************
+function correctionFactor(sensor_reading, humidity, type)
 {
-    corrected = value;
-}
-else if (type == 1)
-{
-    //AQ-SPEC: y = 0.624x + 2.728 (0-100 ug/m3)
-    if (value < 100)
-    {
-        corrected = Math.round(((0.624 * value) + 2.728) * 10) / 10;
-    }
-    else
-    {
-        corrected = value;
-        console.log("Value: " + type  + "  did not meet requirements for correction factor")
-    }
-}
-else if (type == 2)
-{
-    //U of Utah: y = 0.778x + 2.65 (0-60 ug/m3)
-    if (value < 60)
-    {
-        corrected = Math.round(((0.778 * value) + 2.65) * 10) / 10;
-    }
-    else
-    {
-        corrected = value;
-        console.log("Value: " + type  + "  did not meet requirements for correction factor")
-    }
-}
-else if (type == 3)
-{
-    //LRAPA y = 0.5x - 0.66 (0-60 ug/m3)
-    if (value < 60)
-    {
-        corrected = Math.round(((0.5 * value) - 0.66) * 10) /10;
-    }
-    else
-    {
-        corrected = value;
-        console.log("Value: " + type  + "  did not meet requirements for correction factor")
-    }
+    var corrected = 0;
 
-}
-else if (type == 0)
-{
-    //UNBC y = 0.68x + 1.91 (0-20 ug/m3)
-    //UNBC y = 0.87x - 6.62 (>20 ug/m3)
-    if (value <= 20)
+    if (type == 0)
     {
-        corrected = Math.round(((0.68 * value) + 1.91) * 10) / 10;
+        //No Correction Factor
+        corrected = sensor_reading;
     }
-    else if (value > 20)
+    else if (type == 1)
     {
-        corrected = Math.round(((0.87 * value) - 6.62) * 10) / 10;
-    }
-    else
-    {
-        corrected = value;
-        console.log("Value: " + type  + "  did not meet requirements for correction factor")
-    }
-}
-else
-{ 
-    //UNBC y = 0.68x + 1.91 (0-20 ug/m3)
-    //UNBC y = 0.87x - 6.62 (>20 ug/m3)
-    if (value <= 20)
-    {
-        corrected = Math.round(((0.68 * value) + 1.91) * 10) / 10;
-    }
-    else if (value > 20)
-    {
-        corrected = Math.round(((0.87 * value) - 6.62) * 10) / 10;
-    }
-    else
-    {
-        corrected = value;
-        console.log("Value: " + type  + "  did not meet requirements for correction factor")
-    }
-}
-
-return corrected;
-}
-function ajaxhistoricalRetrieve(sensor, time_period, zoom, cfactor)
-{
-console.log("Post: " + sensor["ID"]);
-postarray = 'val=' + sensor["ID"] + '&time_period=' + time_period;
-console.log(postarray)
-element = "container" + sensor["ID"];
-console.log(element);
-$(document).ready(function(){
-    var request;
-
-    request = $.ajax({
-        url: "/hist_database_conn.php",
-        type: "post",
-        dataType: "text",
-        data: postarray
-    });
-
-    request.done(function (response){
-        if (typeof cfactor !== 'undefined')
+        //AQ-SPEC: y = 0.624x + 2.728 (0-100 ug/m3)
+        if (sensor_reading < 100)
         {
-            console.log(cfactor);
-            var corrected = [];
-            var data = JSON.parse(response);
-            console.log(data);
-            for (i in data[0])
-            {
-                console.log("i = " + i);
-                var list_part = [];
-                for (x in data[0][i])
-                {
-                    console.log(data[0][i][x]);
-                    var point = [data[0][i][x][0], correctionFactor(data[0][i][x][1], cfactor)];
-                    list_part.push(point);
-                }
-                corrected.push(list_part);
-            }
-            var final = [];
-            final.push(corrected);
-            console.log(final);
-            drawChart(sensor, element, final, zoom);
+            corrected = Math.round(((0.624 * sensor_reading) + 2.728) * 10) / 10;
         }
         else
         {
-            console.log(response)
-            var json_data = JSON.parse(response);
-            console.log(json_data)
-            drawChart(sensor, element, json_data, zoom);
+            corrected = sensor_reading;
+            console.log("Value: " + type  + "  did not meet requirements for correction factor")
         }
-    });
+    }
+    else if (type == 2)
+    {
+        //LRAPA y = 0.5x - 0.66 (0-60 ug/m3)
+        if (sensor_reading < 60)
+        {
+            corrected = Math.round(((0.5 * sensor_reading) - 0.66) * 10) /10;
+        }
+        else
+        {
+            corrected = sensor_reading;
+            console.log("Value: " + type  + "  did not meet requirements for correction factor")
+        }
+    
+    }
+    else if (type == 3)
+    {
+        //U of Utah: y = 0.778x + 2.65 (0-60 ug/m3)
+        if (sensor_reading < 60)
+        {
+            corrected = Math.round(((0.778 * sensor_reading) + 2.65) * 10) / 10;
+        }
+        else
+        {
+            corrected = sensor_reading;
+            console.log("Value: " + type  + "  did not meet requirements for correction factor")
+        }
+    }
+    else
+    { 
+        // Old UNBC Correction Factor
+        // - UNBC y = 0.68x + 1.91 (0-20 ug/m3)
+        // - UNBC y = 0.87x - 6.62 (>20 ug/m3)
+        // New UNBC Correction Factor:  Model 2 from the article "Development and evaluation of
+        // correction models for a low-cost fine particulate matter monitor"
+        // - UNBC Model 2 - y = pm25_cf1 / (1 + 0.24/(100/rh - 1))
+        if ((humidity > 0) && (humidity < 100))
+        {
+            corrected = sensor_reading / (1 + 0.24 / (100 / humidity - 1));
+            corrected = Math.round(corrected * 10) / 10;
+            if (corrected > 100)
+            {
+                corrected = Math.round(corrected);
+            }
+        }
+        else
+        {
+            corrected = sensor_reading;
+        }
+    }
 
-    console.log("Here")
-
-    request.fail(function(jqXHR, textStatus, errorThrown){
-        console.error("The following error occurred: " +
-        textStatus, errorThrown
-        );
-    });
-    console.log("Here 2")
-});
+    return corrected;
 }
+
+
+//**************************************************************************************************
+// Function: ajaxhistoricalRetrieve
+//**************************************************************************************************
+function ajaxhistoricalRetrieve(sensor, time_period, cfactor, zoom)
+{
+    postarray = 'val=' + sensor["ID"] + '&time_period=' + time_period;
+    element = "container" + sensor["ID"];
+
+    console.log("Post: " + sensor["ID"]);
+    console.log("Post Array: " + postarray);
+    console.log("Element: " + element);
+    console.log("Time Period: " + time_period);
+    console.log("Zoom: " + zoom);
+    console.log("Correction Factor: " + cfactor);
+
+    $(document).ready(function(){
+        var request;
+
+        request = $.ajax({
+            url: "/hist_database_conn.php",
+            type: "post",
+            dataType: "text",
+            data: postarray
+        });
+
+        request.done(function (response){
+            console.log("Request Complete")
+            console.log("Response: ")
+            console.log(response)
+
+            var data = JSON.parse(response);
+            console.log("Parsed Data: ")
+            console.log(data)
+
+            if ((cfactor !== null) && (typeof cfactor !== 'undefined'))
+            {
+                console.log("Correcting data with: " + cfactor);
+                for (i in data)
+                {
+                    var sensor_value = data[i][1]
+                    var corrected_sensor_value = correctionFactor(sensor_value, 0, cfactor);
+                    data[i][1] = corrected_sensor_value;
+                }
+            }
+            else
+            {
+                console.log("Leaving data uncorrected!")
+            }
+
+            console.log("Corrected Data: ")
+            console.log(data)
+            drawChart(sensor, element, data, zoom);
+            console.log("Done")
+        });
+
+        request.fail(function(jqXHR, textStatus, errorThrown){
+            console.error("The following error occurred: " +
+            textStatus, errorThrown
+            );
+        });
+    });
+}
+
+
+//**************************************************************************************************
+// Function: drawChart
+//**************************************************************************************************
 function drawChart(sensor, element, data, zoom)
 {
     console.log('Placing chart at: ' + element);
@@ -647,33 +637,33 @@ point1.y + point2.y
 )));
 }
 
-function waitForChange(sensor){
-$(document).ready(function() {
-//Triggers when a change occurs in the specified element
-div_id = "sensor" + sensor["ID"];
-$("#" + div_id).on('change','#time_period', function() {
-var min, max;
-({min, max} = mychart.axes[0].getExtremes()); 
-var zoom = [min, max];
 
-var time = $("#time_period").val();
-ajaxhistoricalRetrieve(sensor, time, zoom);
-console.log("Time period for sensor #" + sensor + " Has been changed to " + time);
+//**************************************************************************************************
+// Function waitForChange
+//**************************************************************************************************
+function waitForChange(sensor)
+{
+    $(document).ready(function() {
+        //Triggers when a change occurs in the specified element
+        div_id = "sensor" + sensor["ID"];
 
-});
+        // Triggers when a new time period is selected.
+        $("#" + div_id).on('change','#time_period', function() {
+            var time = $("#time_period").val();
+            var correction = $("#chart_correction").val();
+            ajaxhistoricalRetrieve(sensor, time, correction);
+        });
 
-$("#" + div_id).on('change','#chart_correction', function() {
-var min, max;
-({min, max} = mychart.axes[0].getExtremes()); 
-var zoom = [min, max];
+        // Triggers when a new correction factor is selected.
+        $("#" + div_id).on('change','#chart_correction', function() {
+            var min, max;
+            ({min, max} = mychart.axes[0].getExtremes()); 
+            var zoom = [min, max];
 
-var time = $("#time_period").val();
-var correction = $("#chart_correction").val();
-ajaxhistoricalRetrieve(sensor, time, zoom, correction);
-console.log("Time period for sensor #" + sensor + " Has been changed to " + time);
-});
-});
+            var time = $("#time_period").val();
+            var correction = $("#chart_correction").val();
+            console.log("Correction for sensor #" + sensor + " Has been changed to " + correction);
+            ajaxhistoricalRetrieve(sensor, time, correction, zoom);
+        });
+    });
 }
-
-
-
