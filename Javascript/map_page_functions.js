@@ -290,15 +290,15 @@ function setMarkers(values, correctiontype, average)
 
             contentstring[i] = "<div class = 'chart' id = 'sensor" + master[i][0] + "'> <h3 style = 'margin: 10px; font-size: 1.3em; font-family: 'serif';'>"
             + data_pass[i]["Name"] + " (" + data_pass[i]["ID"] + ")</h3>" + message + "<br><b>Chart Data options: </b> &nbsp;" + "<select id = 'time_period'>" +
-                "<option value = '_daily' selected>Daily</option>" +
-                "<option value = '_hourly'>Hourly</option> " +
+                "<option value = '_daily'>Daily</option>" +
+                "<option value = '_hourly' selected>Hourly</option> " +
             "</select> &nbsp;" +
             "<select id = 'chart_correction'>" +
-                "<option value = '0' selected>No Correction Factor</option>" +
+                "<option value = '0'>No Correction Factor</option>" +
                 "<option value = '1'>AQ-SPEC</option>" +
                 "<option value = '2'>LRAPA</option>" +
                 "<option value = '3'>U of Utah</option>" +
-                "<option value = '4'>UNBC</option>" +
+                "<option value = '4' selected>UNBC</option>" +
             "</select>";
     
             //creates new markers
@@ -491,7 +491,8 @@ function ajaxhistoricalRetrieve(sensor, time_period, cfactor, zoom)
                 for (i in data)
                 {
                     var sensor_value = data[i][1]
-                    var corrected_sensor_value = correctionFactor(sensor_value, 0, cfactor);
+                    var humidity = data[i][2]
+                    var corrected_sensor_value = correctionFactor(sensor_value, humidity, cfactor);
                     data[i][1] = corrected_sensor_value;
                 }
             }
