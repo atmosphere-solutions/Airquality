@@ -258,7 +258,7 @@
                 map = new google.maps.Map(document.getElementById('map'), {
                     center: gibsons,
                     zoom: 10,
-                    mapTypeId: 'terrain',
+                    mapTypeId: 'roadmap',
                     streetViewControl: false,
                     fullscreenControl: false,
                     options: {

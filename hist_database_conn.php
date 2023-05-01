@@ -32,7 +32,7 @@
   }
   $idtable = $table_name . '_Readings_' . $_POST['val'];
 
-  $sql = "SELECT PM2_5Value, Lastseen FROM $idtable ORDER BY Lastseen";
+  $sql = "SELECT PM2_5Value, Humidity, Lastseen FROM $idtable ORDER BY Lastseen";
   //echo($sql . "\n");
 
   $result = $conn->query($sql);
@@ -44,15 +44,17 @@
     while($row = $result->fetch_assoc())
     {
       $pm_value = $row["PM2_5Value"];
+      $humidity = $row["Humidity"];
       $last = $row["Lastseen"];
 
       $date = date_create($last);
       $date_formatted = date_format($date, "U");
 
       $pm_value_float = floatval($pm_value);
+      $humidity_float = floatval($humidity);
       $date_epoch = floatval($date_formatted) * 1000;
                     
-      $monitor_array[] = array($date_epoch, $pm_value_float);
+      $monitor_array[] = array($date_epoch, $pm_value_float, $humidity_float);
     }
 
     //converts PHP array into a format javascript can interpret
