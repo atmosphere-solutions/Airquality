@@ -270,7 +270,10 @@
                 //Cookies.set('average', 0);
                 setMapzoom();
                 ajaxRetrieve();
-                setInterval(ajaxRetrieve, 60*1000);
+
+                // Update the markers at the specified interval.
+                var marker_update_interval = 5 * 60 * 1000;
+                setInterval(ajaxRetrieve, marker_update_interval);
             }
             
             $(document).ready(function() {

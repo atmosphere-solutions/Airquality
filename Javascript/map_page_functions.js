@@ -195,14 +195,15 @@ function setMarkers(values, correctiontype, average)
                 // default - current sensor reading
                 rounded[i] = correctionFactor(sensor_reading, humidity, correctiontype);
             }
-        
 
             var icon_type;
             var font_colour = 'white';
+            var risk_colour = 'green';
             if ((rounded[i] > 100) && (rounded[i] < 1000))
             {
                 rounded[i] = Math.round(rounded[i]);
                 icon_type = icon_100plus;
+                risk_colour = 'red';
                 message = "<b style = 'color: red;'>Risk Level: Very High </b><br><b>At Risk Population:</b> Avoid strenuous activities outdoors. Children and the elderly should also avoid outdoor physical exertion.<br>" + 
                 "<b>General Population:</b> Reduce or reschedule strenuous activities outdoors, especially if you experience symptoms such as coughing and throat irritiation.<br>";
             }
@@ -210,6 +211,7 @@ function setMarkers(values, correctiontype, average)
             {
                 rounded[i] = Math.round(rounded[i]);
                 icon_type = icon_100;
+                risk_colour = 'red';
                 message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
                 "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
             }
@@ -217,6 +219,7 @@ function setMarkers(values, correctiontype, average)
             {
                 rounded[i] = Math.round(rounded[i]);
                 icon_type = icon_90;
+                risk_colour = 'red';
                 message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
                 "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
             }
@@ -224,6 +227,7 @@ function setMarkers(values, correctiontype, average)
             {
                 rounded[i] = Math.round(rounded[i]);
                 icon_type = icon_80;
+                risk_colour = 'red';
                 message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
                 "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
             }
@@ -231,6 +235,7 @@ function setMarkers(values, correctiontype, average)
             {
                 rounded[i] = Math.round(rounded[i]);
                 icon_type = icon_70;
+                risk_colour = 'red';
                 message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
                 "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
             }
@@ -238,6 +243,7 @@ function setMarkers(values, correctiontype, average)
             {
                 icon_type = icon_60;
                 font_colour = 'black';
+                risk_colour = 'orange';
                 message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
                 "<b>General Population:</b> No need to modify your usual outdoor activities unless you experience symptoms such as coughing and throat irritation.<br>";
             }
@@ -246,6 +252,7 @@ function setMarkers(values, correctiontype, average)
                 rounded[i] = Math.round(rounded[i]);
                 icon_type = icon_50;
                 font_colour = 'black';
+                risk_colour = 'orange';
                 message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
                 "<b>General Population:</b> No need to modify your usual outdoor activities unless you experience symptoms such as coughing and throat irritation.<br>";
             }
@@ -254,6 +261,7 @@ function setMarkers(values, correctiontype, average)
                 rounded[i] = Math.round(rounded[i]);
                 icon_type = icon_40;
                 font_colour = 'black';
+                risk_colour = 'orange';
                 message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
                 "<b>General Population:</b> No need to modify your usual outdoor activities unless you experience symptoms such as coughing and throat irritation.<br>";
             }
@@ -261,24 +269,30 @@ function setMarkers(values, correctiontype, average)
             {
                 rounded[i] = Math.round(rounded[i]);
                 icon_type = icon_30;
+                risk_colour = 'green';
                 message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
             }
             else if ((rounded[i] < 20) && (rounded[i] >= 10))
             {
                 rounded[i] = Math.round(rounded[i]);
                 icon_type = icon_20;
+                risk_colour = 'green';
                 message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
             }
             else if ((rounded[i] < 10) && (rounded[i] >= 0))
             {
                 icon_type = icon_10;
                 font_colour = 'black';
+                risk_colour = 'green';
                 message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
             }
             else
             {
                 icon_type = icon_NA
             }
+
+            // Display the current sensor reading, humidity and corrected value.
+            current_str = "<b style = 'color: " + risk_colour + ";'>Sensor Reading: " + sensor_reading.toString() + "&ensp;Humidity: " + humidity.toString() + "&ensp;Corrected Value: " + rounded[i].toString() + "</b><br><br>"
     
             data_pass[i] = {
                 "ID": master[i][0], 
@@ -289,7 +303,7 @@ function setMarkers(values, correctiontype, average)
             console.log(data_pass[i]);
 
             contentstring[i] = "<div class = 'chart' id = 'sensor" + master[i][0] + "'> <h3 style = 'margin: 10px; font-size: 1.3em; font-family: 'serif';'>"
-            + data_pass[i]["Name"] + " (" + data_pass[i]["ID"] + ")</h3>" + message + "<br><b>Chart Data options: </b> &nbsp;" + "<select id = 'time_period'>" +
+            + data_pass[i]["Name"] + " (" + data_pass[i]["ID"] + ")</h3>" + current_str + message + "<br><b>Chart Data Options: </b> &nbsp;" + "<select id = 'time_period'>" +
                 "<option value = '_daily'>Daily</option>" +
                 "<option value = '_hourly' selected>Hourly</option> " +
             "</select> &nbsp;" +
