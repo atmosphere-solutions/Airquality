@@ -23,6 +23,7 @@ $(document).ready(function() {
     request.done(function (response, textStatus, jqXHR){
         var correction = Cookies.get('correction_factor');
         var averages = Cookies.get('average');
+        console.log(response[0]);
         console.log("setMarkers");
 
 
@@ -78,12 +79,20 @@ function setMarkers(values, correctiontype, average)
 
         master = values;
 
-        var icon_10 = {
-            url: "Map_Icons/Map_Icon_10.png",
+        var icon_10_outdoor = {
+            url: "Map_Icons/Map_Icon_10_outdoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
         };
+
+        var icon_10_indoor = {
+            url: "Map_Icons/Map_Icon_10_indoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
 
         var icon_20 = {
             url: "Map_Icons/Map_Icon_20.png",
@@ -168,6 +177,7 @@ function setMarkers(values, correctiontype, average)
             var location = new google.maps.LatLng(master[i][4], master[i][5]);
             var sensor_reading = master[i][2]
             var humidity = master[i][6]
+            var location_type = master[i][7]
 
             // I have hidden the average field (current, hour, 3-hour, 24-hour, etc.) for the map as we aren't storing data.
             if (average == 1)
@@ -281,7 +291,14 @@ function setMarkers(values, correctiontype, average)
             }
             else if ((rounded[i] < 10) && (rounded[i] >= 0))
             {
-                icon_type = icon_10;
+                if (location_type == 0)
+                {
+                    icon_type = icon_10_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_10_indoor;
+                }
                 font_colour = 'black';
                 risk_colour = 'green';
                 message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
@@ -299,6 +316,7 @@ function setMarkers(values, correctiontype, average)
                 "Name": master[i][1], 
                 "Value": rounded[i],
                 "Humidity": master[i][6],
+                "Location": master[i][7],
             };
             console.log(data_pass[i]);
 

@@ -12,7 +12,7 @@
     die("Connection failed: " . $conn->connect_error);
   }
 
-  $sql = "SELECT ID, Name, Humidity, PM2_5Value, Lat, Lon, DateCreated FROM Current_Readings_For_Map";
+  $sql = "SELECT ID, Name, Humidity, PM2_5Value, Lat, Lon, DateCreated, Location FROM Current_Readings_For_Map";
   $result = $conn->query($sql);
 
   if ($result->num_rows > 0)
@@ -28,8 +28,9 @@
       $lat = $row["Lat"];
       $lng = $row["Lon"]; 
       $humidity = $row["Humidity"]; 
+      $location = $row["Location"]; 
                     
-      $monitor_array[] = array($id, $label, $value, $last, $lat, $lng, $humidity);
+      $monitor_array[] = array($id, $label, $value, $last, $lat, $lng, $humidity, $location);
     }
 
     //converts PHP array into a format javascript can interpret
