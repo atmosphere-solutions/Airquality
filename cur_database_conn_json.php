@@ -12,7 +12,7 @@
     die("Connection failed: " . $conn->connect_error);
   }
 
-  $sql = "SELECT ID, Name, Humidity, PM2_5Value, Lat, Lon, DateCreated, Location FROM Current_Readings_For_Map";
+  $sql = "SELECT ID, Name, Humidity, PM2_5Value, Lat, Lon, Lastseen, Location FROM Current_Readings_For_Map";
   $result = $conn->query($sql);
 
   if ($result->num_rows > 0)
@@ -24,7 +24,7 @@
       $id = $row["ID"];
       $label = $row["Name"];
       $value = $row["PM2_5Value"];
-      $last = $row["lastModified"];
+      $last = $row["Lastseen"];
       $lat = $row["Lat"];
       $lng = $row["Lon"]; 
       $humidity = $row["Humidity"]; 

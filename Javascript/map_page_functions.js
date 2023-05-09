@@ -93,72 +93,141 @@ function setMarkers(values, correctiontype, average)
             anchor: new google.maps.Point(15,15)
         };
 
-
-        var icon_20 = {
-            url: "Map_Icons/Map_Icon_20.png",
+        var icon_20_outdoor = {
+            url: "Map_Icons/Map_Icon_20_outdoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
         };
 
-        var icon_30 = {
-            url: "Map_Icons/Map_Icon_30.png",
+        var icon_20_indoor = {
+            url: "Map_Icons/Map_Icon_20_indoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
         };
 
-        var icon_40 = {
-            url: "Map_Icons/Map_Icon_40.png",
+        var icon_30_outdoor = {
+            url: "Map_Icons/Map_Icon_30_outdoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
         };
 
-        var icon_50 = {
-            url: "Map_Icons/Map_Icon_50.png",
+        var icon_30_indoor = {
+            url: "Map_Icons/Map_Icon_30_indoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
         };
 
-        var icon_60 = {
-            url: "Map_Icons/Map_Icon_60.png",
+        var icon_40_outdoor = {
+            url: "Map_Icons/Map_Icon_40_outdoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
         };
 
-        var icon_70 = {
-            url: "Map_Icons/Map_Icon_70.png",
+        var icon_40_indoor = {
+            url: "Map_Icons/Map_Icon_40_indoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
         };
 
-        var icon_80 = {
-            url: "Map_Icons/Map_Icon_80.png",
+        var icon_50_outdoor = {
+            url: "Map_Icons/Map_Icon_50_outdoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
         };
 
-        var icon_90 = {
-            url: "Map_Icons/Map_Icon_90.png",
+        var icon_50_indoor = {
+            url: "Map_Icons/Map_Icon_50_indoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
         };
 
-        var icon_100 = {
-            url: "Map_Icons/Map_Icon_100.png",
+        var icon_60_outdoor = {
+            url: "Map_Icons/Map_Icon_60_outdoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
         };
 
-        var icon_100plus = {
-            url: "Map_Icons/Map_Icon_100+.png",
+        var icon_60_indoor = {
+            url: "Map_Icons/Map_Icon_60_indoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_70_outdoor = {
+            url: "Map_Icons/Map_Icon_70_outdoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_70_indoor = {
+            url: "Map_Icons/Map_Icon_70_indoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_80_outdoor = {
+            url: "Map_Icons/Map_Icon_80_outdoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_80_indoor = {
+            url: "Map_Icons/Map_Icon_80_indoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_90_outdoor = {
+            url: "Map_Icons/Map_Icon_90_outdoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_90_indoor = {
+            url: "Map_Icons/Map_Icon_90_indoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_100_outdoor = {
+            url: "Map_Icons/Map_Icon_100_outdoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_100_indoor = {
+            url: "Map_Icons/Map_Icon_100_indoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_100plus_outdoor = {
+            url: "Map_Icons/Map_Icon_100+_outdoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_100plus_indoor = {
+            url: "Map_Icons/Map_Icon_100+_indoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
@@ -178,6 +247,13 @@ function setMarkers(values, correctiontype, average)
             var sensor_reading = master[i][2]
             var humidity = master[i][6]
             var location_type = master[i][7]
+
+            // Create a string for the popup dialog.
+            location_str = "Indoor"
+            if (location_type == 0)
+            {
+                location_str = "Outdoor";
+            }
 
             // I have hidden the average field (current, hour, 3-hour, 24-hour, etc.) for the map as we aren't storing data.
             if (average == 1)
@@ -212,7 +288,14 @@ function setMarkers(values, correctiontype, average)
             if ((rounded[i] > 100) && (rounded[i] < 1000))
             {
                 rounded[i] = Math.round(rounded[i]);
-                icon_type = icon_100plus;
+                if (location_type == 0)
+                {
+                    icon_type = icon_100plus_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_100plus_indoor;
+                }
                 risk_colour = 'red';
                 message = "<b style = 'color: red;'>Risk Level: Very High </b><br><b>At Risk Population:</b> Avoid strenuous activities outdoors. Children and the elderly should also avoid outdoor physical exertion.<br>" + 
                 "<b>General Population:</b> Reduce or reschedule strenuous activities outdoors, especially if you experience symptoms such as coughing and throat irritiation.<br>";
@@ -220,7 +303,14 @@ function setMarkers(values, correctiontype, average)
             else if ((rounded[i] < 100) && (rounded[i] >= 90))
             {
                 rounded[i] = Math.round(rounded[i]);
-                icon_type = icon_100;
+                if (location_type == 0)
+                {
+                    icon_type = icon_100_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_100_indoor;
+                }
                 risk_colour = 'red';
                 message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
                 "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
@@ -228,7 +318,14 @@ function setMarkers(values, correctiontype, average)
             else if ((rounded[i] < 90) && (rounded[i] >= 80))
             {
                 rounded[i] = Math.round(rounded[i]);
-                icon_type = icon_90;
+                if (location_type == 0)
+                {
+                    icon_type = icon_90_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_90_indoor;
+                }
                 risk_colour = 'red';
                 message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
                 "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
@@ -236,7 +333,14 @@ function setMarkers(values, correctiontype, average)
             else if ((rounded[i] < 80) && (rounded[i] >= 70))
             {
                 rounded[i] = Math.round(rounded[i]);
-                icon_type = icon_80;
+                if (location_type == 0)
+                {
+                    icon_type = icon_80_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_80_indoor;
+                }
                 risk_colour = 'red';
                 message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
                 "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
@@ -244,14 +348,28 @@ function setMarkers(values, correctiontype, average)
             else if ((rounded[i] < 70) && (rounded[i] >= 60))
             {
                 rounded[i] = Math.round(rounded[i]);
-                icon_type = icon_70;
+                if (location_type == 0)
+                {
+                    icon_type = icon_70_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_70_indoor;
+                }
                 risk_colour = 'red';
                 message = "<b style = 'color: red;'>Risk Level: High </b><br><b>At Risk Population:</b> Reduce or reschedule strenuous activities outdoors. Children and elderly should also take it easy.<br>" + 
                 "<b>General Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms as coughing and throat irritation.<br>";
             }
             else if ((rounded[i] < 60) && (rounded[i] >= 50))
             {
-                icon_type = icon_60;
+                if (location_type == 0)
+                {
+                    icon_type = icon_60_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_60_indoor;
+                }
                 font_colour = 'black';
                 risk_colour = 'orange';
                 message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
@@ -260,7 +378,14 @@ function setMarkers(values, correctiontype, average)
             else if ((rounded[i] < 50) && (rounded[i] >= 40))
             {
                 rounded[i] = Math.round(rounded[i]);
-                icon_type = icon_50;
+                if (location_type == 0)
+                {
+                    icon_type = icon_50_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_50_indoor;
+                }
                 font_colour = 'black';
                 risk_colour = 'orange';
                 message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
@@ -269,7 +394,14 @@ function setMarkers(values, correctiontype, average)
             else if ((rounded[i] < 40) && (rounded[i] >= 30))
             {
                 rounded[i] = Math.round(rounded[i]);
-                icon_type = icon_40;
+                if (location_type == 0)
+                {
+                    icon_type = icon_40_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_40_indoor;
+                }
                 font_colour = 'black';
                 risk_colour = 'orange';
                 message = "<b style = 'color: orange;'>Risk Level: Moderate </b><br><b>At Risk Population:</b> Consider reducing or reschedulig strenuous activities outdoors if you are experiencing symptoms.<br>" + 
@@ -278,14 +410,28 @@ function setMarkers(values, correctiontype, average)
             else if ((rounded[i] < 30) && (rounded[i] >= 20))
             {
                 rounded[i] = Math.round(rounded[i]);
-                icon_type = icon_30;
+                if (location_type == 0)
+                {
+                    icon_type = icon_30_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_30_indoor;
+                }
                 risk_colour = 'green';
                 message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
             }
             else if ((rounded[i] < 20) && (rounded[i] >= 10))
             {
                 rounded[i] = Math.round(rounded[i]);
-                icon_type = icon_20;
+                if (location_type == 0)
+                {
+                    icon_type = icon_20_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_20_indoor;
+                }
                 risk_colour = 'green';
                 message = "<b style = 'color: green;'>Risk Level: Low </b><br><b>At Risk Population:</b> Enjoy your usual outdoor activities.<br> <b>General Population:</b> Ideal air quality for outdoor activities.<br>";
             }
@@ -308,8 +454,20 @@ function setMarkers(values, correctiontype, average)
                 icon_type = icon_NA
             }
 
+            // If the last reading from the sensor is more than 3 hours old, mark with a gray icon.
+            var date_string = master[i][3].replace(/ /,'T') + 'Z';
+            var sensor_date_time = new Date(Date.parse(date_string));
+            var current_date_time = new Date();
+            var THREE_HOURS = 3 * 60 * 60 * 1000;
+            if ((current_date_time - sensor_date_time) > THREE_HOURS)
+            {
+                icon_type = icon_NA
+                risk_colour = 'gray';
+            }
+            current_date_str = "<b style = 'color: " + risk_colour + ";'>" + sensor_date_time.toString() + "</b><br><br>"
+
             // Display the current sensor reading, humidity and corrected value.
-            current_str = "<b style = 'color: " + risk_colour + ";'>Sensor Reading: " + sensor_reading.toString() + "&ensp;Humidity: " + humidity.toString() + "&ensp;Corrected Value: " + rounded[i].toString() + "</b><br><br>"
+            current_str = "<b style = 'color: " + risk_colour + ";'>" + location_str + " Sensor Reading: " + sensor_reading.toString() + "&ensp;Humidity: " + humidity.toString() + "&ensp;Corrected Value: " + rounded[i].toString() + "</b><br>"
     
             data_pass[i] = {
                 "ID": master[i][0], 
@@ -318,10 +476,10 @@ function setMarkers(values, correctiontype, average)
                 "Humidity": master[i][6],
                 "Location": master[i][7],
             };
-            console.log(data_pass[i]);
+            //console.log(data_pass[i]);
 
             contentstring[i] = "<div class = 'chart' id = 'sensor" + master[i][0] + "'> <h3 style = 'margin: 10px; font-size: 1.3em; font-family: 'serif';'>"
-            + data_pass[i]["Name"] + " (" + data_pass[i]["ID"] + ")</h3>" + current_str + message + "<br><b>Chart Data Options: </b> &nbsp;" + "<select id = 'time_period'>" +
+            + data_pass[i]["Name"] + " (" + data_pass[i]["ID"] + ")</h3>" + current_str + current_date_str + message + "<br><b>Chart Data Options: </b> &nbsp;" + "<select id = 'time_period'>" +
                 "<option value = '_daily'>Daily</option>" +
                 "<option value = '_hourly' selected>Hourly</option> " +
             "</select> &nbsp;" +
