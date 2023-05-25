@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html class='a'>
     <!--<meta name='viewport' content='width=device-width, initial-scale=1.00, maximum-scale=1.00, minimum-scale=1.00, user-scalable=no'>-->
+    <meta name="viewport" content="width=device-width">
     <head>
         <title>Map - Atmosphere Solutions</title>
         <style>
@@ -180,7 +181,7 @@
         <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
     </head>
     <body style = 'overflow: hidden;'>
-        <div id = 'map_container'>
+        <div id = 'map_container' class="map_canvas">
             <div id = 'map'></div>
             <div id = 'heading'>
                 <img class = 'logo' src = 'Map_Icons/Atmospherelogo.png'></img>

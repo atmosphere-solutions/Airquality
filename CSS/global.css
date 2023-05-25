@@ -140,3 +140,7 @@
         {
             width: 170px;
         }
+
+        .map_canvas img {
+            max-width: none;
+        }
