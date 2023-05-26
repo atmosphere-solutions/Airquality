@@ -233,8 +233,15 @@ function setMarkers(values, correctiontype, average)
             anchor: new google.maps.Point(15,15)
         };
 
-        var icon_NA = {
-            url: "Map_Icons/Map_Icon_NA.png",
+        var icon_NA_indoor = {
+            url: "Map_Icons/Map_Icon_NA_indoor.png",
+            scaledSize: new google.maps.Size(30, 30),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(15,15)
+        };
+
+        var icon_NA_outdoor = {
+            url: "Map_Icons/Map_Icon_NA_outdoor.png",
             scaledSize: new google.maps.Size(30, 30),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(15,15)
@@ -451,7 +458,14 @@ function setMarkers(values, correctiontype, average)
             }
             else
             {
-                icon_type = icon_NA
+                if (location_type == 0)
+                {
+                    icon_type = icon_NA_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_NA_indoor;
+                }
             }
 
             // If the last reading from the sensor is more than 3 hours old, mark with a gray icon.
@@ -461,8 +475,15 @@ function setMarkers(values, correctiontype, average)
             var THREE_HOURS = 3 * 60 * 60 * 1000;
             if ((current_date_time - sensor_date_time) > THREE_HOURS)
             {
-                icon_type = icon_NA
                 risk_colour = 'gray';
+                if (location_type == 0)
+                {
+                    icon_type = icon_NA_outdoor;
+                }
+                else
+                {
+                    icon_type = icon_NA_indoor;
+                }
             }
             current_date_str = "<b style = 'color: " + risk_colour + ";'>" + sensor_date_time.toString() + "</b><br><br>"
 
