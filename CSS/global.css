@@ -144,3 +144,30 @@
         .map_canvas img {
             max-width: none;
         }
+
+        @media (min-width: 767px) {
+            .heading {
+                display:flex;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .heading {
+                display:none;
+            }
+            .header_logo {
+                display:none;
+            }
+            .logo {
+                display:none;
+            }
+            .menu-header {
+                display:none;
+            }
+            .menu-item {
+                display:none;
+            }
+            .menu-item-ref {
+                display:none;
+            }
+        }

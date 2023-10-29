@@ -28,7 +28,6 @@
                 width: 300px;
                 height: 65px;
                 border-radius: 2px;
-                display: flex;
                 align-items: center;
             }
             #settings
@@ -183,17 +182,13 @@
     <body style = 'overflow: hidden;'>
         <div id = 'map_container' class="map_canvas">
             <div id = 'map'></div>
-            <div id = 'heading'>
+            <div id = 'heading' class="header_logo">
                 <img class = 'logo' src = 'Map_Icons/Atmospherelogo.png'></img>
                 <ul class = 'menu-header'>
                         <li class = 'menu-item'><a class = 'menu-item-ref' href = 'https://atmospheresolutions.ca'><b>home</b></a></li>
-                        <!--
-                        <li class = 'menu-item'><a class = 'menu-item-ref' href = '/ajax_current.php'><b>current values</b></a></li>
-                        <li class = 'menu-item'><a class = 'menu-item-ref' href = '/Individual_search.php'><b>search engine</b></a></li>
-                        -->
                 </ul>
             </div>
-            <div id = 'settings'>
+            <div id = 'settings' class="options">
                 <p class = 'menu'>
                     <span>Correction Factor: </span>
                     <select id = 'correction_factor' class = 'dropdown'>
@@ -230,14 +225,6 @@
                     -->
                 <img class = 'pm' src='Map_Icons/slider_custom_white.png'>
             </div>
-            <!--<div id = 'logos'>
-                <p style = 'background-color: #4ABF22; border-radius: 5px; color: white; text-align: center; font-size: 16px; margin: 1px; position: fixed; display: block; height: 200px; width: 350px; right: 1px;'>
-                A project of the Sunshine Coast Clean Air Society and Society for Atmosphere Solutions. <br> 
-                Made Possible thanks to support from our partners: <br>
-                <img style = 'position: fixed; height: 56px; width: 180px; right: 150px; top: 92px;' src = 'Map_Icons/SCCU.png'><br>
-                <img style = 'position: fixed; height: 85px; width: 85px; right: 15px; top: 80px;' src = 'Map_Icons/SCRD.png'>
-                <br><br><br><br><a href>www.atmospheresolutions.ca</a>
-            </div>-->  
         </div>
         <div id = 'container' style = 'width:400px; height:200px;'></div>
         <script>
