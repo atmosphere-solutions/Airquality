@@ -10,6 +10,7 @@ import requests
 import csv
 import mysql.connector
 from datetime import datetime, timedelta, timezone
+from dateutil import tz
 
 BC_GOVERNMENT_AQ_DATA = 'https://www.env.gov.bc.ca/epd/bcairquality/aqo/csv/Hourly_Raw_Air_Data/Air_Quality/PM25.csv'
 BC_GOVERNMENT_HUMIDITY_DATA = 'https://www.env.gov.bc.ca/epd/bcairquality/aqo/csv/Hourly_Raw_Air_Data/Meteorological/HUMIDITY.csv'
@@ -19,11 +20,22 @@ AQ_Data = []
 Humidity_Data = []
 Daily_AQ_Data = {}
 
+# Set the pacific timezone since the BC Government data is in that format.
+pacific_tz = tz.gettz('America/Los_Angeles')
+utc_tz = tz.gettz('UTC')
+
 # Get the current date to search the government CSV for the latest data.
 current_time = ""
-current_date = datetime.now().strftime("%Y-%m-%d")
-current_datetime = datetime.now() 
-one_day_datetime = datetime.now()
+
+utc_date = datetime.utcnow()
+utc_date = utc_date.replace(tzinfo=utc_tz)
+pacific_date = utc_date
+pacific_date = utc_date.astimezone(pacific_tz)
+pacific_date = pacific_date.replace(tzinfo=None)
+
+current_date = pacific_date.strftime("%Y-%m-%d")
+current_datetime = pacific_date
+one_day_datetime = pacific_date
 
 ##########################################################################
 # Build AQ data request and load data into an array.  
@@ -177,9 +189,8 @@ for monitor in AQ_Data:
 
     try:
         monitor_datetime = datetime.strptime(monitor[0], '%Y-%m-%d %H:%M')
-        #monitor_utc_datetime = monitor_datetime.replace(tzinfo=timezone.utc)
-        #monitor_utc_timestamp = monitor_utc_datetime.timestamp()
-        monitor_utc_timestamp = monitor_datetime.timestamp()
+        monitor_utc_datetime = monitor_datetime.replace(tzinfo=pacific_tz)
+        monitor_utc_timestamp = monitor_utc_datetime.timestamp()
     except:
         print("Error 1")
         continue
@@ -216,6 +227,8 @@ for monitor in AQ_Data:
         #continue
     #if (longitude > -123.43902) or (longitude < -124.65153):
         #continue
+    #print(monitor_datetime)
+    #print(monitor_utc_timestamp)
 
 
 # Print out the monitor data.
