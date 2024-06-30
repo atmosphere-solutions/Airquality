@@ -6,38 +6,66 @@
         <title>Map - Atmosphere Solutions</title>
         <style>
             @import url('CSS/global.css');
+            #map_container
+            {
+                height: 100%;
+                width: 100%;
+            }
+
             #map 
             {
                 height: 100%;
                 width: 100%;
                 position: absolute;
             }
-            #map_container
-            {
-                height: 100%;
-                width: 100%;
-            }
-            #heading
+
+            #logo-div /* Atmosphere Solutions Logo */
             {
                 position: absolute;
-                margin: 0;
-                text-align: center;
-                left: 50%;
-                transform: translate(-50%);
+                left: 50%;  /* Move Top/Left of Div to Center of screen. */
+                top: 1%;
+                transform: translate(-50%); /* Move Top/Left of Div to left by 50% of Div Width */
                 background-color: #282928c0;
-                width: 300px;
-                height: 65px;
-                border-radius: 2px;
-                align-items: center;
+                width: 460px;
+                height: 100px;
+                border-radius: 10px;
             }
+            .logo-img{
+                height: 95%;
+                width: 95%;
+            }
+
+            #purple-div
+            {
+                position: absolute;
+                left: 1%;
+                top: 1%;
+                transform: translate(0%);
+                background-color: #282928c0;
+                width: 100px;
+                height: 100px;
+                border-radius: 10px;
+            }
+            .purple-img{
+                height: 90%;
+                width: 90%;
+            }
+
             #settings
             {
                 display: block;
                 position: absolute;
                 text-align: center;
-                bottom: 0px;
                 width: 200px;
+                left: 1%;
+                bottom: 1%;
             }
+
+            #correction_factor
+            {
+                margin: 2px;
+            }
+
             #menu
             {
                 position: fixed;
@@ -46,72 +74,6 @@
                 font-size: 14px;
                 bottom: 5px;
                 left: 25px;
-            }
-            #logos
-            {
-                position: fixed;
-                height: 25px;
-                width: 150px;
-                font-size: 14px;
-                top: 5px;
-                right: 60px;
-            }
-            #correction_factor
-            {
-                margin: 2px;
-            }
-            .menu-header
-            {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: flex-end;
-                touch-action: pan-y;
-                word-wrap: break-word;
-                font-size: 16px;
-                line-height: 1.8;
-                color: #fff;
-                font-family: 'Montserrat', sans-serif;
-                font-weight: 400;
-                margin-left: 180px;
-            }
-            .menu-item
-            {
-                list-style: none;
-                position: relative;
-                word-wrap: break-word;
-                font-size: 16px;
-                line-height: 1.8;
-                color: #fff;
-                margin: 0;
-                padding: 4px;
-                font-family: 'Montserrat', sans-serif;
-		        font-weight: 400;
-		        text-decoration: none;
-            }
-
-            .menu-item-ref
-            {
-                list-style: none;
-                position: relative;
-                word-wrap: break-word;
-                font-size: 16px;
-                line-height: 1.8;
-                color: #fff;
-                margin: 0;
-                padding: 4px;
-                font-family: 'Montserrat', sans-serif;
-                font-weight: 400;
-                transition: .2s ease border-color, .2s ease color;
-                border-bottom: 1px solid transparent;
-                background-color: transparent;
-                text-decoration: none;
-                
-            }
-
-            .menu-item-ref:hover 
-            {
-                color: #d1d1d1;
-                border-color: #fff;
             }
 
             .title
@@ -131,13 +93,6 @@
                 width: 200px;
                 text-align: left;
                 word-wrap: break-word;
-            }
-
-            .logo{
-                height: 50px;
-                width: 200px;
-                padding-left: 10px;
-                padding-right: 80px;
             }
             .menu
             {
@@ -182,11 +137,15 @@
     <body style = 'overflow: hidden;'>
         <div id = 'map_container' class="map_canvas">
             <div id = 'map'></div>
-            <div id = 'heading' class="header_logo">
-                <img class = 'logo' src = 'Map_Icons/Atmospherelogo.png'></img>
-                <ul class = 'menu-header'>
-                        <li class = 'menu-item'><a class = 'menu-item-ref' href = 'https://atmospheresolutions.ca'><b>home</b></a></li>
-                </ul>
+            <div id = 'logo-div' class="logo-div-class">
+                <a class = 'logo-href' href="https://atmospheresolutions.ca">
+                    <img class = 'logo-img' src = "Map_Icons/Atmospherelogo.png" />
+                </a>
+            </div>
+            <div id = 'purple-div' class="purple-div-class">
+                <a class = 'purple-href' href="https://purpleair.com">
+                    <img class = 'purple-img' src = "Map_Icons/logo_purple_branded.png" />
+                </a>
             </div>
             <div id = 'settings' class="options">
                 <p class = 'menu'>
@@ -247,6 +206,7 @@
                     center: gibsons,
                     zoom: 10,
                     mapTypeId: 'roadmap',
+                    mapTypeControl: false,
                     streetViewControl: false,
                     fullscreenControl: false,
                     options: {

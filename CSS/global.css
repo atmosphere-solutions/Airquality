@@ -86,7 +86,7 @@
             padding: 0;
         }
 
-	 input
+	input
         {
             appearance: none;
             white-space: normal;
@@ -97,32 +97,6 @@
         form
         {
             margin-top: 0px;
-        }
-
-        img.logo
-        {
-            position: fixed;
-            border-radius: 10px;
-        }
-
-        img.logo2
-        {
-            position: fixed;
-            border-radius: 10px;
-            height: auto;
-            width: 200px;
-        }
-
-        div.logo
-        {
-            margin-right: 75%;
-            display: inline-block;
-        }
-
-        div.logo2
-        {
-            margin-left: 50%;
-            display: inline-block;
         }
 
         .infowindow
@@ -145,29 +119,17 @@
             max-width: none;
         }
 
-        @media (min-width: 767px) {
-            .heading {
-                display:flex;
-            }
-        }
-
         @media (max-width: 767px) {
-            .heading {
+            .logo-div {
                 display:none;
             }
-            .header_logo {
+            .logo-img {
                 display:none;
             }
-            .logo {
+	    .purple-div {
                 display:none;
-            }
-            .menu-header {
-                display:none;
-            }
-            .menu-item {
-                display:none;
-            }
-            .menu-item-ref {
-                display:none;
-            }
-        }
+	    }
+	    .purple-img {
+		display:none;
+	    }
+	}
