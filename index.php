@@ -26,8 +26,6 @@
                 top: 1%;
                 transform: translate(-50%); /* Move Top/Left of Div to left by 50% of Div Width */
                 background-color: #282928c0;
-                width: 460px;
-                height: 100px;
                 border-radius: 10px;
             }
             .logo-img{
@@ -42,10 +40,30 @@
                 top: 1%;
                 transform: translate(0%);
                 background-color: #282928c0;
-                width: 100px;
-                height: 100px;
                 border-radius: 10px;
             }
+
+            @media screen and (max-width: 600px) {
+               #logo-div
+               {
+                   width: 40%
+               }
+               #purple-div
+               {
+                   width: 12%
+               }
+            }
+            @media screen and (min-width: 600px) {
+               #logo-div
+               {
+                   width: 20%
+               }
+               #purple-div
+               {
+                   width: 6%
+               }
+            }
+
             .purple-img{
                 height: 90%;
                 width: 90%;
@@ -74,6 +92,7 @@
                 font-size: 14px;
                 bottom: 5px;
                 left: 25px;
+                border-radius: 10px;
             }
 
             .title

@@ -118,18 +118,3 @@
         .map_canvas img {
             max-width: none;
         }
-
-        @media (max-width: 767px) {
-            .logo-div {
-                display:none;
-            }
-            .logo-img {
-                display:none;
-            }
-	    .purple-div {
-                display:none;
-	    }
-	    .purple-img {
-		display:none;
-	    }
-	}
