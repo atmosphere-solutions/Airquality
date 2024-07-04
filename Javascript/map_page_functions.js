@@ -525,6 +525,15 @@ function setMarkers(values, correctiontype, average)
             //creates pop-ups
             google.maps.event.addListener(marker, 'click', (function (marker, i) {
             return function () {
+                    console.log("POPUP STARTED");
+                    console.log("Hide elements");
+                    var purple_logo = document.getElementById('purple-div');
+                    var atmos_logo = document.getElementById('logo-div');
+                    var menu = document.getElementById('settings');
+                    purple_logo.style.display = 'none';
+                    atmos_logo.style.display = 'none';
+                    menu.style.display = 'none';
+                    console.log("Next Steps");
                     infowindow.open(map, marker);
                     infowindow.setContent(contentstring[i] + "<div class = 'infowindow' id = 'container" + master[i][0] + "'></div></div>");
                     
@@ -538,6 +547,15 @@ function setMarkers(values, correctiontype, average)
                         var time = $("#time_period").val();
                         var correction = $("#chart_correction").val();
                         ajaxhistoricalRetrieve(sensor, time, correction);
+                    });
+
+                    //google.maps.event.addListener(infowindow, 'unload', function(){
+                    //infowindow.onunload = function(){
+                    google.maps.event.addListener(infowindow, 'closeclick', function(){
+                        console.log("POPUP CLOSED");
+                        purple_logo.style.display = 'inline';
+                        atmos_logo.style.display = 'inline';
+                        menu.style.display = 'inline';
                     });
                     waitForChange(data_pass[i]);
                 }
@@ -669,7 +687,7 @@ function ajaxhistoricalRetrieve(sensor, time_period, cfactor, zoom)
 {
     postarray = 'val=' + sensor["ID"] + '&time_period=' + time_period;
     element = "container" + sensor["ID"];
-
+    
     console.log("Post: " + sensor["ID"]);
     console.log("Post Array: " + postarray);
     console.log("Element: " + element);

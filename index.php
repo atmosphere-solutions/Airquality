@@ -39,7 +39,7 @@
                 left: 1%;
                 top: 1%;
                 transform: translate(0%);
-                background-color: #282928c0;
+                background-color: #ffffffff;
                 border-radius: 10px;
             }
 
@@ -52,6 +52,10 @@
                {
                    width: 12%
                }
+               #settings
+               {
+                   width: 12%
+               }
             }
             @media screen and (min-width: 600px) {
                #logo-div
@@ -60,11 +64,16 @@
                }
                #purple-div
                {
-                   width: 6%
+                   width: 20%
+               }
+               #settings
+               {
+                   width: 12%
                }
             }
 
             .purple-img{
+                border-top: 5px;
                 height: 90%;
                 width: 90%;
             }
@@ -74,7 +83,6 @@
                 display: block;
                 position: absolute;
                 text-align: center;
-                width: 200px;
                 left: 1%;
                 bottom: 1%;
             }
@@ -163,7 +171,7 @@
             </div>
             <div id = 'purple-div' class="purple-div-class">
                 <a class = 'purple-href' href="https://purpleair.com">
-                    <img class = 'purple-img' src = "Map_Icons/logo_purple_branded.png" />
+                    <img class = 'purple-img' src = "Map_Icons/logo_purple_call.png" />
                 </a>
             </div>
             <div id = 'settings' class="options">
