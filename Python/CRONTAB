@@ -1,3 +1,8 @@
-#*/5 * * * * sudo python3 /var/www/html/Airquality/Python/get_monitor_readings.py monitor_data > /var/log/get_monitor_readings.log 2>&1
-3-59/5 * * * * sudo python3 /var/www/html/Airquality/Python/store_readings.py > /var/log/store_readings.log 2>&1
+# Update the Sunshine Coast Region every 5 minutes at the 4 and 9s past the hour except at 4 minutes after.
+9-59/5 * * * * sudo python3 /var/www/html/Airquality/Python/store_readings.py 0 > /var/log/store_readings_0.log 2>&1
+# Update all of BC current, hourly and daily numbers at 4 minutes after every hour.
+4 * * * * sudo python3 /var/www/html/Airquality/Python/store_readings.py 1 > /var/log/store_readings_1.log 2>&1
+# Update government of BC readings every 1/2 hour.
 */30 * * * * sudo python3 /var/www/html/Airquality/Python/store_gov_readings.py > /var/log/store_gov_readings.log 2>&1
+# Restart the mysql server threee times a day to save memory at 1 minute past the hour.
+1 1,9,17 * * * sudo service mysql restart > /var/log/mysqlrestart.log 2>&1

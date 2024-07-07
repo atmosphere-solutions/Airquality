@@ -1,122 +1,21 @@
 ##########################################################################
 #
-#  The script takes in a db table name as a command line parameter.
-#  It validates that the name is one of two tables:
-#    - monitor_data - Data that is retrieved every 5 minutes
-#    - nightly_monitor_data - Data that is retrieved once a day
-#  The script then creates the database table if it doesn't already
-#  exists.  This table uses the purple air json file tags as
-#  it column names.  
-#  The script then populate the database table with data retrieved for a list of
-#  stations hard-coded into this script.
+#  This script loads a list of all sensors from BC and stores their
+#  constant data into a file for later usage.
 #
-#  Here are the new purple air API column names:
+#  Here are the columns that are stored with this query:
 #  (https://api.purpleair.com/#api-sensors-get-sensor-data)
 #
-#  ## Station information and status fields ##
-#  name - String - The name given to the sensor from the registration form and used on the PA map.
-#  icon - Integer - A flag reserved for future use to reference an icon for the sensor.
-#  model - 
-#  hardware - String - The sensors and other hardware that was detected by the firmware.
-#  location_type - Integer - The location type.  Possible values are: 0 = Outside or 1 = Inside.
-#  private - Integer - A flag indicating the private status of the sensor. Possible values are: 0 = public or 1 = private
-#  latitude - Number - The latitude position value for the sensor.
-#  longitude - Number - The longitude position value for the sensor.
-#  altitude - Number - The altitude for the sensor's location in feet.
-#  position_rating - Integer - 0 is nowhere near the claimed, 5 is close to the map location
-#  led_brightness -
-#  firmware_version - String - The last known firmware version on the device.
-#  firmware_upgrade - 
-#  rssia - Integer - The WiFi signal strength.
-#  uptime - Integer - The time in minutes since the firmware started as last reported by the sensor.
-#  pa_latency - Integer - The time taken to send data to the PurpleAir servers in milliseconds.
-#  memory - Integer - Free HEAP memory in Kb.
-#  last_seen - Long - The UNIX time stamp of the last time the server received data from the device.
-#  last_modified - Long - The UNIX time stamp from the last time the device was modified by the registration form.
-#  date_created - Long - The UNIX time stamp from when the device was created.
-#  channel_state - String[] - ["No PM", "PM-A", "PM-B", "PM-A+PM-B"] Possible values are:
-#                             - No PM = No PM sensors were detected.
-#                             - PM-A = PM sensor on channel A only.
-#                             - PM-B = PM sensor on channel B only.
-#                             - PM-A+PM-B = PM sensor on both channel A and B.
-#  channel_flags - String[] - ["Normal", "A-Downgraded", "B-Downgraded", "A+B-Downgraded"] Possible values are:
-#                             - Normal = No PM sensors are marked as downgraded.
-#                             - A-Downgraded = PM sensor on channel A is marked as downgraded.
-#                             - B-Downgraded = PM sensor on channel B is marked as downgraded.
-#                             - A+B-Downgraded = PM sensors on both channels A and B are marked as downgraded.
-#  channel_flags_manual -
-#  channel_flags_auto -
-#  confidence -
-#  confidence_manual -
-#  confidence_auto -
-#
-#  ## Environmental fields ##
-#  humidity - Integer - Relative humidity inside of the sensor housing (%). On average, this is 4% lower than 
-#                       ambient conditions. Null if not equipped. (Average of a and b sensors)
-#  humidity_a - Integer - As above for sensor a.
-#  humidity_b - Integer - As above for sensor b.
-#  temperature - Integer - Temperature inside of the sensor housing (F). On average, this is 8F higher than 
-#                        - ambient conditions. Null if not equipped. (Average of a and b sensors)
-#  temperature_a - Integer - As above for sensor a.
-#  temperature_b - Integer - As above for sensor b.
-#  pressure - Number - Current pressure in Millibars. (Average of a and b sensors)
-#  pressure_a - Number - As above for sensor a.
-#  pressure_b - Number - As above for sensor b.
-#
-#  ## Miscellaneous fields ##
-#  voc - Number - VOC concentration (IAQ) in Bosch static iaq units as per BME680 spec sheet, EXPERIMENTAL. 
-#                 Null if not equipped. (Average of a and b sensors)
-#  voc_a - Number - As above for sensor a.
-#  voc_b - Number - As above for sensor b.
-#  ozone1 - Number - Ozone concentration (PPB) Null if not equipped.
-#  analog_input - Number - If anything is connected to it, the analog voltage on ADC input of the PurpleAir sensor control board.
-#
-#  ## PM2.5 fields ##
-#  pm2.5_alt - Number - The ALT Variant estimated mass concentration PM2.5 (ug/m3) is derived from the particle counts. 
-#                       PM2.5 are fine particulates with a diameter of fewer than 2.5 microns.  pm2.5_alt returns average 
-#                       ALT variant for channel A and B but excluding downgraded channels. (Average of a and b sensors)
-#  pm2.5_alt_a - Number - As above for sensor a.
-#  pm2.5_alt_b - Number - As above for sensor b.
-#  pm2.5 - Number - Estimated mass concentration PM2.5 (ug/m3). PM2.5 are fine particulates with a diameter of fewer
-#                   than 2.5 microns.  (Average of a and b sensors)
-#  pm2.5_a - Number - As above for sensor a.
-#  pm2.5_b - Number - As above for sensor b. 
-#  pm2.5_atm - Number - Returns ATM variant average for channel A and B but excluding downgraded channels. 
-#  pm2.5_atm_a - Number - As above for sensor a.
-#  pm2.5_atm_b - Number - As above for sensor b.
-#  pm2.5_cf_1 - Number - Returns CF=1 variant average for channel A and B but excluding downgraded channels. 
-#  pm2.5_cf_1_a - Number - As above for sensor a.
-#  pm2.5_cf_1_b - Number - As above for sensor b.
-#
-#  ## PM2.5 pseudo (simple running) average fields ##
-#  pm2.5_10minute - Number - 10 minute pseudo (estimated) average for PM2.5 (Average of a and b sensors)
-#  pm2.5_10minute_a - Number - As above for sensor a.
-#  pm2.5_10minute_b - Number - As above for sensor b.
-#  pm2.5_30minute - Number - 30 minute pseudo (estimated) average for PM2.5 (Average of a and b sensors)
-#  pm2.5_30minute_a - Number - As above for sensor a.
-#  pm2.5_30minute_b - Number - As above for sensor b.
-#  pm2.5_60minute - Number - 60 minute pseudo (estimated) average for PM2.5 (Average of a and b sensors)
-#  pm2.5_60minute_a - Number - As above for sensor a.
-#  pm2.5_60minute_b - Number - As above for sensor b.
-#  pm2.5_6hour - Number - 6 hour pseudo (estimated) average for PM2.5 (Average of a and b sensors)
-#  pm2.5_6hour_a - Number - As above for sensor a.
-#  pm2.5_6hour_b - Number - As above for sensor b.
-#  pm2.5_24hour - Number - 24 hour pseudo (estimated) average for PM2.5 (Average of a and b sensors)
-#  pm2.5_24hour_a - Number - As above for sensor a.
-#  pm2.5_24hour_b - Number - As above for sensor b.
-#  pm2.5_1week - Number - 7 day pseudo (estimated) average for PM2.5 (Average of a and b sensors)
-#  pm2.5_1week_a - Number - As above for sensor a.
-#  pm2.5_1week_b - Number - As above for sensor b.
-#
-#  ## ThingSpeak fields, used to retrieve data from api.thingspeak.com ##
-#  primary_id_a - Number - ThingSpeak channel ID for storing sensor values
-#  primary_key_a - String - ThingSpeak read key used for accessing data for the channel
-#  secondary_id_a - Number - ThingSpeak channel ID for storing sensor values
-#  secondary_key_a - String - ThingSpeak read key used for accessing data for the channel
-#  primary_id_b - Number - ThingSpeak channel ID for storing sensor values
-#  primary_key_b - String - ThingSpeak read key used for accessing data for the channel
-#  secondary_id_b - Number - ThingSpeak channel ID for storing sensor values
-#  secondary_key_b - String - ThingSpeak read key used for accessing data for the channel
+#   "last_seen"       - The UNIX time stamp of the last time the server 
+#                       received data from the device.
+#   "sensor_index"    - The sensor_id of the new member sensor. This must 
+#                       be AS PRINTED on the sensor’s label.
+#   "name"            - The name given to the sensor from the registration 
+#                       form and used on the PA map.
+#   "location_type"   - The location type.  Possible values are: 
+#                       0 = Outside or 1 = Inside.
+#   "latitude"        - Latitude coordinate of the sensor.
+#   "longitude"       - Longitude coordinate of the sensor.
 #
 ##########################################################################
 
@@ -170,15 +69,52 @@ def createTable(dbcon, tablename, columns):
 
 ##########################################################################
 #
+# Select the monitors that we will be updating with this run.
+# 0 - Sunshine Coast
+# 1 - Rest of BC
+#
+##########################################################################
+region = 0
+if (len(sys.argv) > 1) and (sys.argv[1] == '0'):
+    print("******************** Sunshine Coast ********************")
+    region = 0
+elif (len(sys.argv) > 1) and (sys.argv[1] == '1'):
+    print("******************** All of BC ********************")
+    region = 1
+else:
+    print("******************** Unknown Region  ********************")
+    sys.exit()
+
+if (region == 0):
+    nw_lat = 49.88034
+    nw_lon = -124.65153
+    se_lat = 49.34380
+    se_lon = -123.43902
+elif (region == 1):
+    nw_lat = 60.00
+    nw_lon = -139.06
+    se_lat = 48.30
+    se_lon = -114.03
+else:
+    sys.exit()
+
+print('North West Latitude: ' + str(nw_lat))
+print('North West Longitude: ' + str(nw_lon))
+print('South East Latitude: ' + str(se_lat))
+print('South East Longitude: ' + str(se_lon))
+
+
+##########################################################################
+#
 # Get all the latest monitor data for all sensors in the BC region.
 #
 ##########################################################################
 PURPLE_AIR_SENSOR_API = 'https://api.purpleair.com/v1/sensors'
 PURPLE_AIR_API_KEY = '5901141D-E28E-11EC-8561-42010A800005'
-BC_NW_LATITUDE = 60.00
-BC_NW_LONGITUDE = -139.06
-BC_SE_LATITUDE = 48.30
-BC_SE_LONGITUDE = -114.03
+BC_NW_LATITUDE = nw_lat
+BC_NW_LONGITUDE = nw_lon
+BC_SE_LATITUDE = se_lat
+BC_SE_LONGITUDE = se_lon
 result = ''
 
 # Sort method for the monitor list by id.
@@ -187,12 +123,20 @@ def sortParam(elem):
 
 # List all the sensor fields that we want to retrieve from Purple Air.
 Sensor_Fields = [
-    "last_seen",      # The UNIX time stamp of the last time the server received data from the device.
-    "sensor_index",   # The sensor_id of the new member sensor. This must be AS PRINTED on the sensor’s label.
-    "name",           # The name given to the sensor from the registration form and used on the PA map.
-    "location_type",  # The location type.  Possible values are: 0 = Outside or 1 = Inside.
-    "humidity",       # Relative humidity inside of the sensor housing (%). On average, this is 4% lower than ambient conditions. Null if not equipped.
-    "pm2.5",          # Average of channel A and B excluding downgraded channels and using CF=1 variant for indoor, ATM variant for outdoor devices
+    "last_seen",      # The UNIX time stamp of the last time the server 
+                      # received data from the device.
+    "sensor_index",   # The sensor_id of the new member sensor. This must 
+                      # be AS PRINTED on the sensor’s label.
+    "name",           # The name given to the sensor from the registration 
+                      # form and used on the PA map.
+    "location_type",  # The location type.  Possible values are: 
+                      # 0 = Outside or 1 = Inside.
+    "humidity",       # Relative humidity inside of the sensor housing (%). 
+                      # On average, this is 4% lower than ambient 
+                      # conditions. Null if not equipped.
+    "pm2.5",          # Average of channel A and B excluding downgraded 
+                      # channels and using CF=1 variant for indoor, 
+                      # ATM variant for outdoor devices
     "pm2.5_60minute",
     "pm2.5_24hour",
     "latitude",
@@ -294,7 +238,7 @@ HOURLY_TABLE_PREFIX = "Hourly_Readings_"
 DAILY_TABLE_PREFIX = "Daily_Readings_"
 
 for monitor in monitor_array:
-    # Get the timestamp from the monitor data and convert to SQL date format.
+    # Get the timestamp from monitor data and convert to SQL date format.
     datecreated = monitor["DateCreated"]
     lastseen = monitor["Lastseen"]
 
@@ -352,12 +296,6 @@ for monitor in monitor_array:
         print("Bad Data:")
         print(monitor)
         continue
-
-    # For now only insert data for sunshine coast into tables.
-    #if (latitude < 49.34380) or (latitude > 49.88034):
-    #    continue
-    #if (longitude > -123.43902) or (longitude < -124.65153):
-    #    continue
 
     ######################################################################
     # Ensure tables exist for current monitor.
@@ -425,7 +363,7 @@ for monitor in monitor_array:
     # Insert hourly data into sensor specific tables.
     # - Only insert at the top of the hour.
     ######################################################################
-    if (lastseen_dt.minute < 5):
+    if (lastseen_dt.minute < 9):
         # Create SQL string to insert a row into the database table.
         sql = "REPLACE INTO " + hourly_table + " (Lastseen, Humidity, PM2_5Value) VALUES (%s, %s, %s)"
     
@@ -446,7 +384,7 @@ for monitor in monitor_array:
     # - Only insert at the top of the hour at midnight pacific time.
     ######################################################################
 
-    if ((lastseen_dt.minute < 5) and (lastseen_dt.hour == 8)):
+    if ((lastseen_dt.minute < 9) and (lastseen_dt.hour == 8)):
         # Create SQL string to insert a row into the database table.
         sql = "REPLACE INTO " + daily_table + " (Lastseen, Humidity, PM2_5Value) VALUES (%s, %s, %s)"
     
